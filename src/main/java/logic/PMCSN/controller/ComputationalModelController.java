@@ -60,6 +60,44 @@ class MsqEvent {
  * 9 abbandono
  */
 
+/* (PROVA)
+ * LOGIN
+ * 0 arrivo
+ * 1-2 servizio
+ * 3 abbandono
+ * 
+ * ULTIMATE TEAM
+ * 4 arrivo
+ * 5-6 servizio
+ * 7 abbandono
+ * 
+ * STAGIONI
+ * 8 arrivo
+ * 9-10 servizio
+ * 11 abbandono
+ * 
+ * PROCLUB
+ * 12 arrivo
+ * 13-14 servizio
+ * 15 abbandono
+ * 
+ * MATCHMAKING(ULTIMATE TEAM)
+ * 16 arrivo
+ * 17-18 servizio
+ * 19 abbandono
+ * 
+ * MATCHMAKING(STAGIONI)
+ * 20 arrivo
+ * 21-22 servizio
+ * 23 abbandono
+ * 
+ * MATCHMAKING(PROCLUB)
+ * 24 arrivo
+ * 25-26 servizio
+ * 27 abbandono
+ * 
+ */
+
 
 
 public class ComputationalModelController {
@@ -73,34 +111,63 @@ public class ComputationalModelController {
 	public void startAnalysis() {
 		int streamIndex = 1; //per questo processo usiamo il flusso 1 del generatore di numeri casuali. Ogni processo avrà un flusso
 		
-		//inizializzazione dei visitatori nelle varie code
-		long queueInfopoint = 0;
-        long queueYellowCheck = 0;
-        long queueOrangeCheck = 0;
+		//inizializzazione degli utenti nelle varie code
+		long queueLogin = 0;
+		long queueUltimateTeam = 0;
+        long queueStagioni = 0;
+        long queueProClub = 0;
+        long queueMatchmakingUT = 0;
+        long queueMatchmakingS = 0;
+        long queueMatchmakingPC = 0;
         
         //inizializzazione dei double per memorizzare il primo completamento delle varie code
-        double firstCompletationYellowServer = 0;
-        double firstCompletationInfopoint = 0;
-        double firstCompletationOrangeServer = 0;
+        double firstCompletionLogin = 0;
+        double firstCompletionUltimateTeam = 0;
+        double firstCompletionStagioni = 0;
+        double firstCompletionProClub = 0;
+        double firstCompletionMatchmakingUT = 0;
+        double firstCompletionMatchmakingS = 0;
+        double firstCompletionMatchmakingPC = 0;
         
-        //inizializzazione degli interi per memorizzare il totale dei controlli completati in ogni coda
-        int totalYellowcheck = 0;
-        int totalInfopointcheck = 0;
-        int totalOrangecheck = 0;
+        //inizializzazione degli interi per memorizzare il totale dei completatamenti dei server in ogni coda
+        int totalLoginCheck = 0;
+        int totalUltimateTeamCheck = 0;
+        int totalStagioniCheck = 0;
+        int totalProClubCheck = 0;
+        int totalMatchmakingUTcheck = 0;
+        int totalMatchmakingScheck = 0;
+        int totalMatchmakingPCcheck = 0;
 
 		
 		int e; //indice next event, cioè l'evento più imminente
 		int s; //indice del server
 		
-		double areaInfopoint = 0.0;           /* time integrated number in the node */
-        double areaYellow = 0.0;              /* time integrated number in the node */
-		double areaOrange = 0.0;
+		double areaLogin = 0.0;  /* time integrated number in the node */
+		double areaUltimateTeam = 0.0;  /* time integrated number in the node */
+		double areaStagioni = 0.0;  /* time integrated number in the node */
+		double areaProClub = 0.0;  /* time integrated number in the node */
+		double areaMatchmakingUT = 0.0;  /* time integrated number in the node */
+		double areaMatchmakingS = 0.0;  /* time integrated number in the node */
+		double areaMatchmakingPC = 0.0;  /* time integrated number in the node */
 		
 		double service; //tempo di servizio
 		
-        List<Double> abandonsOrange = new ArrayList<>();
-        int abandonsOrangeQueue = 0;
-        
+		List<Double> dropoutsLoginQueue = new ArrayList<>();
+		int dropoutsLogin = 0;
+		List<Double> dropoutsUltimateTeamQueue = new ArrayList<>();
+		int dropoutsUltimateTeam = 0;
+		List<Double> dropoutsStagioniQueue = new ArrayList<>();
+		int dropoutsStagioni = 0;
+		List<Double> dropoutsProClubQueue = new ArrayList<>();
+		int dropoutsProClub = 0;
+		List<Double> dropoutsMatchmakingUTQueue = new ArrayList<>();
+		int dropoutsMatchmakingUT = 0;
+		List<Double> dropoutsMatchmakingSQueue = new ArrayList<>();
+		int dropoutsMatchmakingS = 0;
+		List<Double> dropoutsMatchmakingPCQueue = new ArrayList<>();
+		int dropoutsMatchmakingPC = 0;
+		
+		
         //Setup generatore RNG
 		Rngs rng = new Rngs();
 		rng.plantSeeds(0); //chiedo all'utente di inserire un seme a runtime
@@ -125,13 +192,13 @@ public class ComputationalModelController {
         }
         
         System.out.println("\n-----------INIZIALIZZAZIONE EVENTI NELLA SIMULAZIONE-------------");
-        int sumDebug = ALL_EVENTS_INFOPOINT + ALL_EVENTS_YELLOW + ALL_EVENTS_ORANGE;
+        int sumDebug = ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB;
         System.out.println("Eventi totali previsti nella simulazione: " + sumDebug);
-        MsqEvent[] events = new MsqEvent[ALL_EVENTS_INFOPOINT + ALL_EVENTS_YELLOW + ALL_EVENTS_ORANGE];
-        MsqSum[] sum = new MsqSum[ALL_EVENTS_INFOPOINT + ALL_EVENTS_YELLOW + ALL_EVENTS_ORANGE];
+        MsqEvent[] events = new MsqEvent[ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB];
+        MsqSum[] sum = new MsqSum[ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB];
         
         System.out.println("Lista eventi: ");
-        for (int i = 0; i < ALL_EVENTS_INFOPOINT + ALL_EVENTS_YELLOW + ALL_EVENTS_ORANGE; i++) {
+        for (int i = 0; i < ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB; i++) {
             events[i] = new MsqEvent();
             sum[i] = new MsqSum();
         }
@@ -149,20 +216,12 @@ public class ComputationalModelController {
         System.out.println("Il prossimo evento avverrà all'istante: " + t.next);
         
         //PRIMO ARRIVO NEL SISTEMA GENERICO
-        System.out.println("\n-----------PRIMO ARRIVO AL SISTEMA GENERICO--------");
+        System.out.println("\n-----------PRIMO ARRIVO AL SISTEMA--------");
         
         double generic_t;
-        generic_t = getArrival(rng, 0, t.current);
-        if (rng.random() < 0.5) {
-        	System.out.println("E' un visitatore con il QR Code, va nella coda gialla");
-        	events[0].t = generic_t;
-        	events[0].x = 1;
-        }
-        else {
-        	System.out.println("E' un visitatore senza il QR Code, va all'infopoint");
-        	events[3].t = generic_t;
-        	events[3].x = 1;
-        }
+        events[0].t = getArrival(rng, 0, t.current);
+        events[0].x = 1;
+        
         
         System.out.println("Nuova lista eventi: ");
         for (int i = 0; i < events.length; i++) {
@@ -171,7 +230,7 @@ public class ComputationalModelController {
         	System.out.println(" ");
         }
         
-        for (int i = 0; i < ALL_EVENTS_INFOPOINT + ALL_EVENTS_YELLOW + ALL_EVENTS_ORANGE; i++) {
+        for (int i = 0; i < ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB; i++) {
         	if ((events[i].t != 0) && (events[i].x != 1)) {
         		events[i].t = START;
                 events[i].x = 0;
@@ -192,12 +251,12 @@ public class ComputationalModelController {
         
         /* === INIZIO ITERAZIONE === */
         System.out.println("\n\n\n----INIZIA LA SIMULAZIONE------");
-        System.out.println("La simulazione andrà avanti fin tanto ci sarà un arrivo nella coda gialla, nella coda infopoint oppure fino a quando ci sarà ancora qualcuno in qualche coda da servire");
+        System.out.println("La simulazione andrà avanti fin tanto ci sarà un arrivo nella coda del login oppure fino a quando ci sarà ancora qualcuno in qualche coda da servire");
         
         int iter = 0;
         
-        while ((events[0].x != 0) || (events[3].x != 0) || (queueInfopoint + queueYellowCheck + queueOrangeCheck != 0)) {
-        //while (iter != 25) {
+        while ((events[0].x != 0) || (queueLogin + queueUltimateTeam + queueStagioni + queueProClub + queueMatchmakingUT + queueMatchmakingS + queueMatchmakingPC != 0)) {
+        //while (iter != 5) {
         	iter++;
         	System.out.println("\n-------NUOVA ITERAZIONE, è LA NUMERO: " + iter);
         	System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI: ");
@@ -207,24 +266,52 @@ public class ComputationalModelController {
             	System.out.println(" ");
             }
             System.out.println("Events[0].x vale " + events[0].x);
-            System.out.println("Events[3].x vale " + events[3].x);
-            System.out.println("queueInfopoint vale " + queueInfopoint);
-            System.out.println("queueYellowCheck vale " + queueYellowCheck);
-            System.out.println("queueOrangeCheck vale " + queueOrangeCheck);
-        	
+            System.out.println("queueLogin vale " + queueLogin);
+            System.out.println("queueUltimateTeam vale " + queueUltimateTeam);
+            System.out.println("queueStagioni vale " + queueStagioni);
+            System.out.println("queueProClub vale " + queueProClub);
+            System.out.println("queueMatchmakingUT vale " + queueMatchmakingUT);
+            System.out.println("queueMatchmakingS vale " + queueMatchmakingS);
+            System.out.println("queueMatchmakingPC vale " + queueMatchmakingPC);
+            
         	System.out.println("\n----SITUAZIONE ABBANDONI-----------");
-        	System.out.println("ABBANDONI ARANCIONI: ");
-        	for (double info: abandonsOrange) {
+        	System.out.println("ABBANDONI LOGIN: ");
+        	for (double info: dropoutsLoginQueue) {
         		System.out.println(info);
         	}
+        	System.out.println("ABBANDONI ULTIMATE TEAM: ");
+        	for (double info: dropoutsUltimateTeamQueue) {
+        		System.out.println(info);
+        	}
+        	System.out.println("ABBANDONI STAGIONI: ");
+        	for (double info: dropoutsStagioniQueue) {
+        		System.out.println(info);
+        	}
+        	System.out.println("ABBANDONI PRO CLUB: ");
+        	for (double info: dropoutsProClubQueue) {
+        		System.out.println(info);
+        	}
+        	System.out.println("ABBANDONI MATCHMAKING ULTIMATE TEAM: ");
+        	for (double info: dropoutsMatchmakingUTQueue) {
+        		System.out.println(info);
+        	}
+        	System.out.println("ABBANDONI MATCHMAKING STAGIONI: ");
+        	for (double info: dropoutsMatchmakingSQueue) {
+        		System.out.println(info);
+        	}
+        	System.out.println("ABBANDONI PRO CLUB: ");
+        	for (double info: dropoutsMatchmakingPCQueue) {
+        		System.out.println(info);
+        	}
+        	
         	       	
-        	if(!abandonsOrange.isEmpty()) {
-        		System.out.println("La lista di abbandoni non è vuota");
-        		events[9].t = abandonsOrange.get(0);
-        		System.out.println("L'evento di abbandono avverrà all'istante " + events[9].t);
-        		events[9].x = 1; //attivo l'evento di abbandono
+        	if(!dropoutsLoginQueue.isEmpty()) {
+        		System.out.println("La lista di abbandoni del Login non è vuota");
+        		events[3].t = dropoutsLoginQueue.get(0);
+        		System.out.println("L'evento di abbandono del Login avverrà all'istante " + events[3].t);
+        		events[3].x = 1; //attivo l'evento di abbandono
         		
-        		System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO: ");
+        		System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DEL LOGIN: ");
                 for (int i = 0; i < events.length; i++) {
                 	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
                 	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
@@ -232,9 +319,119 @@ public class ComputationalModelController {
                 }
         	}
         	else {
-        		System.out.println("La lista di abbandoni è vuota, l'evento viene disattivato");
-        		events[9].x = 0; //disattivo l'evento di abbandono
+        		System.out.println("La lista di abbandoni del Login è vuota, l'evento viene disattivato");
+        		events[3].x = 0; //disattivo l'evento di abbandono
         	}
+        	
+        	if(!dropoutsUltimateTeamQueue.isEmpty()) {
+        		System.out.println("La lista di abbandoni della coda di Ultimate Team non è vuota");
+        		events[7].t = dropoutsLoginQueue.get(0);
+        		System.out.println("L'evento di abbandono della coda di Ultimate Team avverrà all'istante " + events[3].t);
+        		events[7].x = 1; //attivo l'evento di abbandono
+        		
+        		System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO Di ULTIMATE TEAM: ");
+                for (int i = 0; i < events.length; i++) {
+                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+                	System.out.println(" ");
+                }
+        	}
+        	else {
+        		System.out.println("La lista di abbandoni della coda di Ultimate Team è vuota, l'evento viene disattivato");
+        		events[7].x = 0; //disattivo l'evento di abbandono
+        	}
+        	
+        	if(!dropoutsStagioniQueue.isEmpty()) {
+        		System.out.println("La lista di abbandoni della coda delle Stagioni non è vuota");
+        		events[11].t = dropoutsLoginQueue.get(0);
+        		System.out.println("L'evento di abbandono avverrà della coda delle Stagioni all'istante " + events[11].t);
+        		events[11].x = 1; //attivo l'evento di abbandono
+        		
+        		System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DELLE STAGIONI: ");
+                for (int i = 0; i < events.length; i++) {
+                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+                	System.out.println(" ");
+                }
+        	}
+        	else {
+        		System.out.println("La lista di abbandoni della coda delle Stagioni è vuota, l'evento viene disattivato");
+        		events[11].x = 0; //disattivo l'evento di abbandono
+        	}
+        	
+        	if(!dropoutsProClubQueue.isEmpty()) {
+        		System.out.println("La lista di abbandoni della coda del Pro Club non è vuota");
+        		events[15].t = dropoutsLoginQueue.get(0);
+        		System.out.println("L'evento di abbandono avverrà all'istante " + events[15].t);
+        		events[15].x = 1; //attivo l'evento di abbandono
+        		
+        		System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DEL PRO CLUB: ");
+                for (int i = 0; i < events.length; i++) {
+                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+                	System.out.println(" ");
+                }
+        	}
+        	else {
+        		System.out.println("La lista di abbandoni della coda del Pro Club è vuota, l'evento viene disattivato");
+        		events[15].x = 0; //disattivo l'evento di abbandono
+        	}
+        	
+        	if(!dropoutsMatchmakingUTQueue.isEmpty()) {
+        		System.out.println("La lista di abbandoni della coda del matchmaking di Ultimate Team non è vuota");
+        		events[19].t = dropoutsLoginQueue.get(0);
+        		System.out.println("L'evento di abbandono della coda del matchmaking di Ultimate Team avverrà all'istante " + events[19].t);
+        		events[19].x = 1; //attivo l'evento di abbandono
+        		
+        		System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DEL MATCHMAKING DI ULTIMATE TEAM: ");
+                for (int i = 0; i < events.length; i++) {
+                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+                	System.out.println(" ");
+                }
+        	}
+        	else {
+        		System.out.println("La lista di abbandoni della coda del matchmaking di Ultimate Team è vuota, l'evento viene disattivato");
+        		events[19].x = 0; //disattivo l'evento di abbandono
+        	}
+        	
+        	if(!dropoutsMatchmakingSQueue.isEmpty()) {
+        		System.out.println("La lista di abbandoni della coda del matchmaking delle stagioni non è vuota");
+        		events[23].t = dropoutsLoginQueue.get(0);
+        		System.out.println("L'evento di abbandono avverrà all'istante " + events[23].t);
+        		events[23].x = 1; //attivo l'evento di abbandono
+        		
+        		System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DEL MATCHMAKING DELLE STAGIONI: ");
+                for (int i = 0; i < events.length; i++) {
+                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+                	System.out.println(" ");
+                }
+        	}
+        	else {
+        		System.out.println("La lista di abbandoni del matchmaking delle stagioni è vuota, l'evento viene disattivato");
+        		events[23].x = 0; //disattivo l'evento di abbandono
+        	}
+        	
+        	if(!dropoutsMatchmakingPCQueue.isEmpty()) {
+        		System.out.println("La lista di abbandoni della coda del matchmaking di Pro Club non è vuota");
+        		events[27].t = dropoutsMatchmakingPCQueue.get(0);
+        		System.out.println("L'evento di abbandono della coda del matchmaking di Pro Club avverrà all'istante " + events[27].t);
+        		events[27].x = 1; //attivo l'evento di abbandono
+        		
+        		System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DEL MATCHMAKING DI PRO CLUB: ");
+                for (int i = 0; i < events.length; i++) {
+                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+                	System.out.println(" ");
+                }
+        	}
+        	else {
+        		System.out.println("La lista di abbandoni della coda del matchmaking di Pro Club è vuota, l'evento viene disattivato");
+        		events[27].x = 0; //disattivo l'evento di abbandono
+        	}
+        	
+
 
             // Trova evento più imminente
             e = nextEvent(events);
@@ -242,9 +439,13 @@ public class ComputationalModelController {
             t.next = events[e].t;
             System.out.println("Siamo all'istante: " + t.current);
             System.out.println("Il prossimo evento (che è quello appena trovato) avverrà all'istante: " + t.next);
-            areaInfopoint += (t.next - t.current)*queueInfopoint;       
-            areaYellow += (t.next - t.current)*queueYellowCheck;          
-    		areaOrange += (t.next - t.current)*queueOrangeCheck;
+    		areaLogin += (t.next - t.current)*queueLogin;
+    		areaUltimateTeam += (t.next - t.current)*queueUltimateTeam;
+    		areaStagioni += (t.next - t.current)*queueStagioni;
+    		areaProClub += (t.next - t.current)*queueProClub;
+    		areaMatchmakingUT += (t.next - t.current)*queueMatchmakingUT;
+    		areaMatchmakingS += (t.next - t.current)*queueMatchmakingS;
+    		areaMatchmakingPC += (t.next - t.current)*queueMatchmakingPC;
     		System.out.println("\n----AGGIORNAMENTO DEL CLOCK------");
             t.current = t.next;
             System.out.println("Siamo all'istante: " + t.current);
@@ -252,212 +453,570 @@ public class ComputationalModelController {
             System.out.println("I due tempi coincidono, quindi andiamo a processare l'evento " + e);
 
             if (e == 0) { //e == 0
-            	System.out.println("\n---------L'EVENTO è UN NUOVO ARRIVO NELLA CODA GIALLA-------------");
-            	queueYellowCheck++;
-            	System.out.println("Elementi in coda gialla: " + queueYellowCheck);
-            	System.out.println("Numero di serventi della coda gialla: " + SERVERS_YELLOW);
+            	System.out.println("\n---------L'EVENTO è UN NUOVO ARRIVO NEL LOGIN-------------");
+            	queueLogin++;
+            	System.out.println("Elementi in coda Login: " + queueLogin);
+            	System.out.println("Numero di serventi della coda Login: " + SERVERS_LOGIN);
             	
-            	System.out.println("------(Intanto pianifico il nuovo evento di arrivo, che sia coda gialla o coda infopoint)");
-            	generic_t = getArrival(rng, 0, t.current);
-            	if (rng.random() < 0.5) {
-            		events[0].t = generic_t;
-            		System.out.println("--------(Sarà un arrivo in coda gialla, all'istante: " + events[0].t + ")");
-            		if (events[0].t > STOP) {
-            			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà");
-                        events[0].x = 0;
-            		}
-            	}
-            	else {
-            		events[3].t = generic_t;
-            		System.out.println("--------(Sarà un arrivo all'infopoint, all'istante: " + events[3].t + ")");
-            		events[0].x = 0; //disattivo l'evento di arrivo alla coda gialla che altrimenti rimarrebbe attivo
-            		if (events[3].t > STOP) {
-            			System.out.println("------(però " + events[3].t + " è oltre " + STOP + "quindi non avverrà");
-            			events[3].x = 0;
-            		} else {
-            			events[3].x = 1;
-            		}
-            	}            	
-            	if (queueYellowCheck <= SERVERS_YELLOW) {
-            		System.out.println("Ci sono meno visitatori in coda di quanti serventi totali");
+            	System.out.println("------(Intanto pianifico il nuovo evento di arrivo, che sarà alla coda Login)");
+            	events[0].t = getArrival(rng, 0, t.current);
+            	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
+            	if (events[0].t > STOP) {
+        			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà");
+                    events[0].x = 0;
+        		}
+            	
+            	            	
+            	if (queueLogin <= SERVERS_LOGIN) {
+            		System.out.println("Ci sono meno utenti in coda di quanti server totali");
             		service = getService(rng, YQ_SR);
             		System.out.println("Si cerca un server libero");
-            		s = findYellowServer(events);
-            		System.out.println("Abbiamo trovato il servente numero " + s);
+            		s = findLoginServer(events);
+            		System.out.println("Abbiamo trovato il server numero " + s);
             		sum[s].service += service;
                     sum[s].served++;
                     events[s].t = t.current + service;
-                    System.out.println("Il servente " + s + " avrà completato all'istante " + events[s].t);
+                    System.out.println("Il server " + s + " avrà completato all'istante " + events[s].t);
                     events[s].x = 1;
             	}
             
-            } else if (e == 3) { //e == 11, cioè l'arrivo all'infopoint
-            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALL'INFOPOINT----------");
-            	queueInfopoint++;
-            	System.out.println("Elementi in coda all'infopoint: " + queueInfopoint);
+            } else if (e == 4) { //e == 4, cioè l'arrivo ad Ultimate Team
+            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DI ULTIMATE TEAM----------");
+            	queueUltimateTeam++;
+            	System.out.println("Elementi in coda ad Ultimate Team: " + queueUltimateTeam);
             	
-            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo, che sia coda gialla o coda infopoint)");
-            	generic_t = getArrival(rng, 0, t.current);
-            	if (rng.random() < 0.5) {
-            		events[0].t = generic_t;
-            		System.out.println("--------(Sarà un arrivo in coda gialla, all'istante: " + events[0].t + ")");
-            		events[3].x = 0;
-            		if (events[0].t > STOP) {
-            			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
-                        events[0].x = 0;
-            		} else {
-            			events[0].x = 1;
-            		}
-            	}
-            	else {
-            		events[3].t = generic_t;
-            		System.out.println("--------(Sarà un arrivo all'infopoint, all'istante: " + events[3].t + ")");
-            		if (events[3].t > STOP) {
-            			System.out.println("------(però " + events[3].t + " è oltre " + STOP + "quindi non avverrà)");
-            			events[3].x = 0;
-            		}
+            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	events[0].t = getArrival(rng, 0, t.current);
+            	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
+            	if (events[0].t > STOP) {
+        			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
+                    events[0].x = 0;
             	}
             	
-            	System.out.println("Numero di serventi della coda infopoint: " + SERVERS_INFOPOINT);
-            	if (queueInfopoint <= SERVERS_INFOPOINT) { //verifico se posso essere servito subito
+            	System.out.println("Numero di server della coda Ultimate Team: " + SERVERS_ULTIMATE_TEAM);
+            	if (queueUltimateTeam <= SERVERS_ULTIMATE_TEAM) { //verifico se posso essere servito subito
             		service = getService(rng, INFOQ_SR);
-            		System.out.println("Si cerca un server libero tra i " + SERVERS_INFOPOINT);
-            		s = findInfoPointServer(events);
-            		System.out.println("Abbiamo trovato il servente numero " + s);
+            		System.out.println("Si cerca un server libero tra i " + SERVERS_ULTIMATE_TEAM);
+            		s = findUltimateTeamServer(events);
+            		System.out.println("Abbiamo trovato il server numero " + s);
             		sum[s].service += service;
                     sum[s].served++;
                     events[s].t = t.current + service;
-                    System.out.println("Il servente " + s + " avrà completato all'istante " + events[s].t);
+                    System.out.println("Il server " + s + " avrà completato all'istante " + events[s].t);
                     events[s].x = 1;
             	}	
             
-            } else if ((e >= 4) && (e <= 5)) { //sono gli eventi dei serventi in infopoint
-            	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVENTE ALL'INFOPOINT------------");
-            	if (firstCompletationInfopoint == 0) { //salviamo il primo completamento per le statistiche
-            		firstCompletationInfopoint = t.current;
+            } else if (e == 8) { // e == 8 arrivo alla coda Stagioni
+            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DI STAGIONI----------");
+            	queueStagioni++;
+            	System.out.println("Elementi in coda a Stagioni: " + queueStagioni);
+            	
+            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	events[0].t = getArrival(rng, 0, t.current);
+            	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
+            	if (events[0].t > STOP) {
+        			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
+                    events[0].x = 0;
             	}
-            	totalInfopointcheck++; //aumento il numero di persone controllate in questo centro
-            	System.out.println("Persone controllate all'infopoint: " + totalInfopointcheck);
-            	queueInfopoint--; //diminuisco di 1 il numero di visitatori in coda in questo centro
-            	System.out.println("Persone ancora nell'infopoint: " + queueInfopoint);
-            	events[0].t = t.current; //genero un nuovo arrivo alla coda gialla
-            	events[0].x = 1; //attivo il nuovo evento alla coda gialla
-            	System.out.println("Generato e attivato un nuovo arrivo alla coda gialla che avverrà al tempo: " + t.current);
-            	s = e;
-            	if (queueInfopoint >= SERVERS_INFOPOINT) {//ci sono ancora elementi in coda
-            		System.out.println("Ci sono degli elementi in coda infopoint da servire, ma ora il servente " + s + " si è liberato");
+            	
+            	System.out.println("Numero di server della coda Stagioni: " + SERVERS_STAGIONI);
+            	if (queueStagioni <= SERVERS_STAGIONI) { //verifico se posso essere servito subito
             		service = getService(rng, INFOQ_SR);
-            		sum[s].service += service;
-                    sum[s].served++;
-                    events[s].t = t.current + service; 
-                    System.out.println("Il servente " + s + " concluderà all'istante " + events[s].t);
-            	} else { //altrimenti, se non ci sono persone in coda
-            		System.out.println("Non ci sono altri elementi in coda infopoint, il servente " + s + " diventa disponibile");
-            		events[s].x = 0; //il server diventa libero
-            		
-            	}  	
-            
-            } else if ((e >= 1) && (e <= 2)) {//sono gli eventi dei serventi in coda gialla
-            	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVENTE ALLA CODA GIALLA------------");
-            	if (firstCompletationYellowServer == 0) {
-            		firstCompletationYellowServer = t.current;
-            	}
-            	totalYellowcheck++;
-            	System.out.println("Persone controllate alla coda gialla: " + totalYellowcheck);
-            	queueYellowCheck--;
-            	System.out.println("Persone ancora nella coda gialla: " + queueYellowCheck);
-            	
-            	if (rng.random() < 0.5) {
-            		System.out.println("Il visitatore andrà in coda arancione per ulteriori controlli");            		
-            	    events[6].t = t.current; //aggiunto un evento alla coda arancione
-            		events[6].x = 1; //attivazione dell'evento
-            	}
-            	
-            	s = e;
-            	if (queueYellowCheck >= SERVERS_YELLOW) {
-            		System.out.println("Ci sono degli elementi in coda gialla da servire, ma ora il servente " + s + " si è liberato");
-            		service = getService(rng, YQ_SR);
-            		sum[s].service += service;
-            		sum[s].served++;
-            		events[s].t = t.current + service;
-            		System.out.println("Il servente " + s + " concluderà all'istante " + events[s].t);
-            	} else {
-            		System.out.println("Non ci sono altri elementi in coda gialla, il servente " + s + " diventa disponibile");
-            		events[s].x = 0;
-            	}
-            
-            } else if (e == 6) { //arrivi nella coda arancione
-            	System.out.println("\n--------L'EVENTO è UN NUOVO ARRIVO ALLA CODA ARANCIONE-----------");
-            	events[6].x = 0; //disattivo l'arrivo alla coda arancione
-            	queueOrangeCheck++;
-            	System.out.println("Elementi in coda arancione: " + queueOrangeCheck);
-            	if (queueOrangeCheck <= SERVERS_ORANGE) {
-            		System.out.println("Ci sono meno visitatori di quanti serventi");
-            		service = getService(rng, ORQ_SR);
-            		System.out.println("Si cerca un servente libero");
-            		s = findOrangeServer(events);
-            		System.out.println("Trovato il servente di indice " + s);
+            		System.out.println("Si cerca un server libero tra i " + SERVERS_STAGIONI);
+            		s = findStagioniServer(events);
+            		System.out.println("Abbiamo trovato il server numero " + s);
             		sum[s].service += service;
                     sum[s].served++;
                     events[s].t = t.current + service;
-                    System.out.println("Il servente terminerà all'istante di tempo " + events[s].t);
+                    System.out.println("Il server " + s + " avrà completato all'istante " + events[s].t);
                     events[s].x = 1;
             	}
             	
-            } else if ((e >= 7) && (e <= 8)) { //eventi dei serventi nella coda arancione
-            	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVENTE ALLA CODA ARANCIONE------------");
-            	if (firstCompletationOrangeServer == 0) {
-            		firstCompletationOrangeServer = t.current;
+            } else if (e == 12) { //e == 12 arrivo alla coda Pro Club
+            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DI PRO CLUB----------");
+            	queueProClub++;
+            	System.out.println("Elementi in coda a Pro Club: " + queueProClub);
+            	
+            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	events[0].t = getArrival(rng, 0, t.current);
+            	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
+            	if (events[0].t > STOP) {
+        			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
+                    events[0].x = 0;
+            	}
+            	
+            	System.out.println("Numero di server della coda Pro Club: " + SERVERS_PRO_CLUB);
+            	if (queueProClub <= SERVERS_PRO_CLUB) { //verifico se posso essere servito subito
+            		service = getService(rng, INFOQ_SR);
+            		System.out.println("Si cerca un server libero tra i " + SERVERS_PRO_CLUB);
+            		s = findProClubServer(events);
+            		System.out.println("Abbiamo trovato il server numero " + s);
+            		sum[s].service += service;
+                    sum[s].served++;
+                    events[s].t = t.current + service;
+                    System.out.println("Il server " + s + " avrà completato all'istante " + events[s].t);
+                    events[s].x = 1;
+            	}
+            	
+            } else if (e == 16) {//e == 16, arrivo al Matchmaking di Ultimate Team
+            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DEL MATCHMAKING DI ULTIMATE TEAM----------");
+            	queueMatchmakingUT++;
+            	System.out.println("Elementi in coda al matchmaking di Ultimate Team: " + queueMatchmakingUT);
+            	
+            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	events[0].t = getArrival(rng, 0, t.current);
+            	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
+            	if (events[0].t > STOP) {
+        			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
+                    events[0].x = 0;
+            	}
+            	
+            	System.out.println("Numero di server della coda di matchmaking di Ultimate Team: " + SERVERS_MATCHMAKING_UT);
+            	if (queueMatchmakingUT <= SERVERS_MATCHMAKING_UT) { //verifico se posso essere servito subito
+            		service = getService(rng, INFOQ_SR);
+            		System.out.println("Si cerca un server libero tra i " + SERVERS_MATCHMAKING_UT);
+            		s = findMatchmakingUtServer(events);
+            		System.out.println("Abbiamo trovato il server numero " + s);
+            		sum[s].service += service;
+                    sum[s].served++;
+                    events[s].t = t.current + service;
+                    System.out.println("Il server " + s + " avrà completato all'istante " + events[s].t);
+                    events[s].x = 1;
+            	}
+            	
+            } else if (e == 20) { //e == 20, arrivo alla coda matchmaking di Stagioni
+            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DEL MATCHMAKING DI STAGIONI----------");
+            	queueMatchmakingS++;
+            	System.out.println("Elementi in coda al matchmaking di Stagioni: " + queueMatchmakingS);
+            	
+            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	events[0].t = getArrival(rng, 0, t.current);
+            	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
+            	if (events[0].t > STOP) {
+        			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
+                    events[0].x = 0;
+            	}
+            	
+            	System.out.println("Numero di server della coda di matchmaking Stagioni: " + SERVERS_MATCHMAKING_STAGIONI);
+            	if (queueMatchmakingS <= SERVERS_MATCHMAKING_STAGIONI) { //verifico se posso essere servito subito
+            		service = getService(rng, INFOQ_SR);
+            		System.out.println("Si cerca un server libero tra i " + SERVERS_MATCHMAKING_STAGIONI);
+            		s = findMatchmakingStagioniServer(events);
+            		System.out.println("Abbiamo trovato il server numero " + s);
+            		sum[s].service += service;
+                    sum[s].served++;
+                    events[s].t = t.current + service;
+                    System.out.println("Il server " + s + " avrà completato all'istante " + events[s].t);
+                    events[s].x = 1;
+            	}
+            	
+            } else if (e == 24) { //e == 24, arrivo alla coda matchmaking di Pro Club
+            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DEL MATCHMAKING DI PRO CLUB----------");
+            	queueMatchmakingPC++;
+            	System.out.println("Elementi in coda al matchmaking di Pro Club: " + queueMatchmakingPC);
+            	
+            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	events[0].t = getArrival(rng, 0, t.current);
+            	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
+            	if (events[0].t > STOP) {
+        			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
+                    events[0].x = 0;
+            	}
+            	
+            	System.out.println("Numero di serventi della coda del matchmaking di Pro Club: " + SERVERS_MATCHMAKING_PRO_CLUB);
+            	if (queueMatchmakingPC <= SERVERS_MATCHMAKING_PRO_CLUB) { //verifico se posso essere servito subito
+            		service = getService(rng, INFOQ_SR);
+            		System.out.println("Si cerca un server libero tra i " + SERVERS_MATCHMAKING_PRO_CLUB);
+            		s = findMatchmakingPCServer(events);
+            		System.out.println("Abbiamo trovato il server numero " + s);
+            		sum[s].service += service;
+                    sum[s].served++;
+                    events[s].t = t.current + service;
+                    System.out.println("Il server " + s + " avrà completato all'istante " + events[s].t);
+                    events[s].x = 1;
+            	}
+            	
+            } else if ((e >= 1) && (e <= 2)) { //eventi dei server di Login
+            	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AL LOGIN------------------");
+            	if (firstCompletionLogin == 0) { //salviamo il primo completamento per le statistiche 
+            		firstCompletionLogin = t.current; 
             	}
             	boolean abandon = generateAbandon(rng, streamIndex, P1);//qua si decide se l'utente abbandona oppure supera i controlli
-            	if (abandon) { //se il visitatore non supera i controlli
-            		System.out.println("Il visitatore non ha superato i controlli arancioni");
+            	if (abandon) { //se l'utente non supera i controlli
+            		System.out.println("L'utente non ha superato i controlli del Login");
             		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
             		System.out.println("Prossimo evento di abbandono: " + abandonTime);
-            		abandonsOrange.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni
-            		System.out.println("Torna disponibile il servente " + e + " per abbandono");
-            		queueOrangeCheck--;
+            		dropoutsLoginQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni
+            		System.out.println("Torna disponibile il server " + e + " per abbandono");
+            		queueLogin--;
             		s = e;
-                	if (queueOrangeCheck >= SERVERS_ORANGE) {
-                		System.out.println("Ci sono degli elementi in coda arancione da servire, ma ora il servente " + s + " si è liberato");
+                	if (queueLogin >= SERVERS_LOGIN) {
+                		System.out.println("Ci sono degli elementi in coda Login da servire, ma ora il server " + s + " si è liberato");
                 		service = getService(rng, ORQ_SR);
                 		sum[s].service += service;
                 		sum[s].served++;
                 		events[s].t = t.current + service;
-                		System.out.println("Il servente " + s + " concluderà all'istante " + events[s].t);
+                		System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
             	     } else {
-            	    	 System.out.println("Non ci sono altri elementi in coda arancione, il servente " + s + " diventa disponibile");
+            	    	 System.out.println("Non ci sono altri elementi in coda Login, il server " + s + " diventa disponibile");
             	    	 events[s].x = 0;
             	     }	
             	}
-            	else { //il visitatore supera i controlli
-            		System.out.println("Il visitatore ha superato i controlli arancioni");
-            		totalOrangecheck++;
-            		System.out.println("Persone controllate alla coda arancione: " + totalOrangecheck);
-                	queueOrangeCheck--;
-                	System.out.println("Persone ancora nella coda arancione: " + queueOrangeCheck);
+            	else {
+            		totalLoginCheck++;//aumento il numero di utenti serviti in questo centro
+                	System.out.println("Utenti serviti nel Login: " + totalLoginCheck);
+                	queueLogin--;//diminuisco di 1 il numero di utenti in coda in questo centro
+                	System.out.println("Utenti ancora nel Login: " + queueLogin);
+                	//events[0].t = t.current; //genero un nuovo arrivo al Login
+                	//events[0].x = 1;//attivo il nuovo evento al Login
+                	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
                 	s = e;
-                	if (queueOrangeCheck >= SERVERS_ORANGE) {
-                		System.out.println("Ci sono degli elementi in coda arancione da servire, ma ora il servente " + s + " si è liberato");
+                	
+                	if (queueLogin >= SERVERS_LOGIN) {//ci sono ancora elementi in coda
+                		System.out.println("Ci sono degli elementi in coda Login da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, INFOQ_SR);
+                		sum[s].service += service;
+                        sum[s].served++;
+                        events[s].t = t.current + service; 
+                        System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+                	} else { //altrimenti, se non ci sono persone in coda
+                		System.out.println("Non ci sono altri elementi in coda Login, il server " + s + " diventa disponibile");
+                      	events[s].x = 0; //il server diventa libero	
+                	}
+            	}
+        	} else if ((e >= 5) && (e <= 6)) { //eventi dei server di Ultimate Team
+        		System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AD ULTIMATE TEAM------------------");
+            	if (firstCompletionUltimateTeam == 0) { //salviamo il primo completamento per le statistiche 
+            		firstCompletionUltimateTeam = t.current; 
+            	}
+            	boolean abandon = generateAbandon(rng, streamIndex, P1);//qua si decide se l'utente abbandona oppure supera i controlli
+            	if (abandon) { //se l'utente non supera i controlli
+            		System.out.println("L'utente non ha superato i controlli di Ultimate Team");
+            		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
+            		System.out.println("Prossimo evento di abbandono: " + abandonTime);
+            		dropoutsUltimateTeamQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni
+            		System.out.println("Torna disponibile il server " + e + " per abbandono");
+            		queueUltimateTeam--;
+            		s = e;
+                	if (queueUltimateTeam >= SERVERS_ULTIMATE_TEAM) {
+                		System.out.println("Ci sono degli elementi in coda Ultimate Team da servire, ma ora il server " + s + " si è liberato");
                 		service = getService(rng, ORQ_SR);
                 		sum[s].service += service;
                 		sum[s].served++;
                 		events[s].t = t.current + service;
-                		System.out.println("Il servente " + s + " concluderà all'istante " + events[s].t);
+                		System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
             	     } else {
-            	    	 System.out.println("Non ci sono altri elementi in coda arancione, il servente " + s + " diventa disponibile");
+            	    	 System.out.println("Non ci sono altri elementi in coda Ultimate Team, il server " + s + " diventa disponibile");
             	    	 events[s].x = 0;
-            	     }
-                }
-            
-            } else { //evento di abbandono della coda arancione, quindi events[26]
-            	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA ARANCIONE------------");
-            	abandonsOrangeQueue++;
-            	abandonsOrange.remove(0);
+            	     }	
+            	}
+            	else {
+            		totalUltimateTeamCheck++;//aumento il numero di utenti serviti in questo centro
+                	System.out.println("Utenti serviti nella coda Ultimate Team: " + totalUltimateTeamCheck);
+                	queueUltimateTeam--;//diminuisco di 1 il numero di utenti in coda in questo centro
+                	System.out.println("Utenti ancora nella coda UltimateTeam: " + queueUltimateTeam);
+                	//events[0].t = t.current; //genero un nuovo arrivo al Login
+                	//events[0].x = 1;//attivo il nuovo evento al Login
+                	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
+                	s = e;
+                	
+                	if (queueUltimateTeam >= SERVERS_ULTIMATE_TEAM) {//ci sono ancora elementi in coda
+                		System.out.println("Ci sono degli elementi in coda Ultimate Teame da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, INFOQ_SR);
+                		sum[s].service += service;
+                        sum[s].served++;
+                        events[s].t = t.current + service; 
+                        System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+                	} else { //altrimenti, se non ci sono persone in coda
+                		System.out.println("Non ci sono altri elementi in coda Ultimate Team, il server " + s + " diventa disponibile");
+                      	events[s].x = 0; //il server diventa libero	
+                	}
+            	}
+            	
+            } else if ((e >= 9) && (e <= 10)) { //eventi dei server di Stagioni
+            	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER DI STAGIONI------------------");
+            	if (firstCompletionStagioni == 0) { //salviamo il primo completamento per le statistiche 
+            		firstCompletionStagioni = t.current; 
+            	}
+            	boolean abandon = generateAbandon(rng, streamIndex, P1);//qua si decide se l'utente abbandona oppure supera i controlli
+            	if (abandon) { //se l'utente non supera i controlli
+            		System.out.println("L'utente non ha superato i controlli di Stagioni");
+            		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
+            		System.out.println("Prossimo evento di abbandono: " + abandonTime);
+            		dropoutsStagioniQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni
+            		System.out.println("Torna disponibile il server " + e + " per abbandono");
+            		queueStagioni--;
+            		s = e;
+                	if (queueStagioni >= SERVERS_STAGIONI) {
+                		System.out.println("Ci sono degli elementi in coda Stagioni da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, ORQ_SR);
+                		sum[s].service += service;
+                		sum[s].served++;
+                		events[s].t = t.current + service;
+                		System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+            	     } else {
+            	    	 System.out.println("Non ci sono altri elementi in coda Stagioni, il server " + s + " diventa disponibile");
+            	    	 events[s].x = 0;
+            	     }	
+            	}
+            	else {
+            		totalStagioniCheck++;//aumento il numero di utenti serviti in questo centro
+                	System.out.println("Utenti serviti nella coda di Stagioni: " + totalStagioniCheck);
+                	queueStagioni--;//diminuisco di 1 il numero di utenti in coda in questo centro
+                	System.out.println("Utenti ancora nella coda di Stagioni: " + queueStagioni);
+                	//events[0].t = t.current; //genero un nuovo arrivo al Login
+                	//events[0].x = 1;//attivo il nuovo evento al Login
+                	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
+                	s = e;
+                	
+                	if (queueStagioni >= SERVERS_STAGIONI) {//ci sono ancora elementi in coda
+                		System.out.println("Ci sono degli elementi in coda Stagioni da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, INFOQ_SR);
+                		sum[s].service += service;
+                        sum[s].served++;
+                        events[s].t = t.current + service; 
+                        System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+                	} else { //altrimenti, se non ci sono persone in coda
+                		System.out.println("Non ci sono altri elementi in coda Stagioni, il server " + s + " diventa disponibile");
+                      	events[s].x = 0; //il server diventa libero	
+                	}
+            	}
+            	
+            } else if ((e >= 13) && (e <= 14)) { //eventi dei server di Pro Club
+            	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AL PRO CLUB------------------");
+            	if (firstCompletionProClub == 0) { //salviamo il primo completamento per le statistiche 
+            		firstCompletionProClub = t.current; 
+            	}
+            	boolean abandon = generateAbandon(rng, streamIndex, P1);//qua si decide se l'utente abbandona oppure supera i controlli
+            	if (abandon) { //se l'utente non supera i controlli
+            		System.out.println("L'utente non ha superato i controlli del ProClub");
+            		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
+            		System.out.println("Prossimo evento di abbandono: " + abandonTime);
+            		dropoutsProClubQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni
+            		System.out.println("Torna disponibile il server " + e + " per abbandono");
+            		queueProClub--;
+            		s = e;
+                	if (queueProClub >= SERVERS_PRO_CLUB) {
+                		System.out.println("Ci sono degli elementi in coda ProClub da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, ORQ_SR);
+                		sum[s].service += service;
+                		sum[s].served++;
+                		events[s].t = t.current + service;
+                		System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+            	     } else {
+            	    	 System.out.println("Non ci sono altri elementi in coda ProClub, il server " + s + " diventa disponibile");
+            	    	 events[s].x = 0;
+            	     }	
+            	}
+            	else {
+            		totalProClubCheck++;//aumento il numero di utenti serviti in questo centro
+                	System.out.println("Utenti serviti nel ProClub: " + totalProClubCheck);
+                	queueProClub--;//diminuisco di 1 il numero di utenti in coda in questo centro
+                	System.out.println("Utenti ancora nel ProClub: " + queueProClub);
+                	//events[0].t = t.current; //genero un nuovo arrivo al Login
+                	//events[0].x = 1;//attivo il nuovo evento al Login
+                	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
+                	s = e;
+                	
+                	if (queueProClub >= SERVERS_PRO_CLUB) {//ci sono ancora elementi in coda
+                		System.out.println("Ci sono degli elementi in coda ProClub da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, INFOQ_SR);
+                		sum[s].service += service;
+                        sum[s].served++;
+                        events[s].t = t.current + service; 
+                        System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+                	} else { //altrimenti, se non ci sono persone in coda
+                		System.out.println("Non ci sono altri elementi in coda ProClub, il server " + s + " diventa disponibile");
+                      	events[s].x = 0; //il server diventa libero	
+                	}
+            	}
+            	
+            } else if ((e >= 17) && (e <= 18)) { //eventi dei server di matchmaking di Ultimate Team
+            	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AL MATCHMAKING UT------------------");
+            	if (firstCompletionMatchmakingUT == 0) { //salviamo il primo completamento per le statistiche 
+            		firstCompletionMatchmakingUT = t.current; 
+            	}
+            	boolean abandon = generateAbandon(rng, streamIndex, P1);//qua si decide se l'utente abbandona oppure supera i controlli
+            	if (abandon) { //se l'utente non supera i controlli
+            		System.out.println("L'utente non ha superato i controlli del MatchmakingUT");
+            		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
+            		System.out.println("Prossimo evento di abbandono: " + abandonTime);
+            		dropoutsMatchmakingUTQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni
+            		System.out.println("Torna disponibile il server " + e + " per abbandono");
+            		queueMatchmakingUT--;
+            		s = e;
+                	if (queueMatchmakingUT >= SERVERS_MATCHMAKING_UT) {
+                		System.out.println("Ci sono degli elementi in coda MatchmakingUT da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, ORQ_SR);
+                		sum[s].service += service;
+                		sum[s].served++;
+                		events[s].t = t.current + service;
+                		System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+            	     } else {
+            	    	 System.out.println("Non ci sono altri elementi in coda MatchmakingUT, il server " + s + " diventa disponibile");
+            	    	 events[s].x = 0;
+            	     }	
+            	}
+            	else {
+            		totalMatchmakingUTcheck++;//aumento il numero di utenti serviti in questo centro
+                	System.out.println("Utenti serviti nel MatchmakingUT: " + totalMatchmakingUTcheck);
+                	queueMatchmakingUT--;//diminuisco di 1 il numero di utenti in coda in questo centro
+                	System.out.println("Utenti ancora nel MatchmakingUT: " + queueMatchmakingUT);
+                	//events[0].t = t.current; //genero un nuovo arrivo al Login
+                	//events[0].x = 1;//attivo il nuovo evento al Login
+                	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
+                	s = e;
+                	
+                	if (queueMatchmakingUT >= SERVERS_MATCHMAKING_UT) {//ci sono ancora elementi in coda
+                		System.out.println("Ci sono degli elementi in coda MatchmakingUT da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, INFOQ_SR);
+                		sum[s].service += service;
+                        sum[s].served++;
+                        events[s].t = t.current + service; 
+                        System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+                	} else { //altrimenti, se non ci sono persone in coda
+                		System.out.println("Non ci sono altri elementi in coda MatchmakingUT, il server " + s + " diventa disponibile");
+                      	events[s].x = 0; //il server diventa libero	
+                	}
+            	}
+            	
+            } else if ((e >= 21) && (e <= 22)) { //eventi dei server di matchmaking di Stagioni
+            	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AL MATCHMAKING STAGIONI------------------");
+            	if (firstCompletionMatchmakingS == 0) { //salviamo il primo completamento per le statistiche 
+            		firstCompletionMatchmakingS = t.current; 
+            	}
+            	boolean abandon = generateAbandon(rng, streamIndex, P1);//qua si decide se l'utente abbandona oppure supera i controlli
+            	if (abandon) { //se l'utente non supera i controlli
+            		System.out.println("L'utente non ha superato i controlli del Matchmaking Stagioni");
+            		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
+            		System.out.println("Prossimo evento di abbandono: " + abandonTime);
+            		dropoutsMatchmakingSQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni
+            		System.out.println("Torna disponibile il server " + e + " per abbandono");
+            		queueMatchmakingS--;
+            		s = e;
+                	if (queueMatchmakingS >= SERVERS_MATCHMAKING_STAGIONI) {
+                		System.out.println("Ci sono degli elementi in coda Matchmaking Stagioni da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, ORQ_SR);
+                		sum[s].service += service;
+                		sum[s].served++;
+                		events[s].t = t.current + service;
+                		System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+            	     } else {
+            	    	 System.out.println("Non ci sono altri elementi in coda Matchmaking Stagioni, il server " + s + " diventa disponibile");
+            	    	 events[s].x = 0;
+            	     }	
+            	}
+            	else {
+            		totalMatchmakingScheck++;//aumento il numero di utenti serviti in questo centro
+                	System.out.println("Utenti serviti nel Matchmaking Stagioni: " + totalMatchmakingScheck);
+                	queueMatchmakingS--;//diminuisco di 1 il numero di utenti in coda in questo centro
+                	System.out.println("Utenti ancora nel Matchmaking Stagioni: " + queueMatchmakingS);
+                	//events[0].t = t.current; //genero un nuovo arrivo al Login
+                	//events[0].x = 1;//attivo il nuovo evento al Login
+                	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
+                	s = e;
+                	
+                	if (queueMatchmakingS >= SERVERS_MATCHMAKING_STAGIONI) {//ci sono ancora elementi in coda
+                		System.out.println("Ci sono degli elementi in coda Matchmaking Stagioni da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, INFOQ_SR);
+                		sum[s].service += service;
+                        sum[s].served++;
+                        events[s].t = t.current + service; 
+                        System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+                	} else { //altrimenti, se non ci sono persone in coda
+                		System.out.println("Non ci sono altri elementi in coda Matchmaking Stagioni, il server " + s + " diventa disponibile");
+                      	events[s].x = 0; //il server diventa libero	
+                	}
+            	}
+            	
+            } else if ((e >= 25) && (e <= 26)) { //eventi dei server di matchmaking di Pro Club
+            	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AL MATCHMAKING PRO CLUB------------------");
+            	if (firstCompletionMatchmakingPC == 0) { //salviamo il primo completamento per le statistiche 
+            		firstCompletionMatchmakingPC = t.current; 
+            	}
+            	boolean abandon = generateAbandon(rng, streamIndex, P1);//qua si decide se l'utente abbandona oppure supera i controlli
+            	if (abandon) { //se l'utente non supera i controlli
+            		System.out.println("L'utente non ha superato i controlli del Matchmaking Pro Club");
+            		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
+            		System.out.println("Prossimo evento di abbandono: " + abandonTime);
+            		dropoutsMatchmakingPCQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni
+            		System.out.println("Torna disponibile il server " + e + " per abbandono");
+            		queueMatchmakingPC--;
+            		s = e;
+                	if (queueMatchmakingPC >= SERVERS_MATCHMAKING_PRO_CLUB) {
+                		System.out.println("Ci sono degli elementi in coda Matchmaking Pro Club da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, ORQ_SR);
+                		sum[s].service += service;
+                		sum[s].served++;
+                		events[s].t = t.current + service;
+                		System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+            	     } else {
+            	    	 System.out.println("Non ci sono altri elementi in coda Matchmaking Pro Club, il server " + s + " diventa disponibile");
+            	    	 events[s].x = 0;
+            	     }	
+            	}
+            	else {
+            		totalMatchmakingPCcheck++;//aumento il numero di utenti serviti in questo centro
+                	System.out.println("Utenti serviti nel Matchmaking Pro Club: " + totalMatchmakingPCcheck);
+                	queueMatchmakingPC--;//diminuisco di 1 il numero di utenti in coda in questo centro
+                	System.out.println("Utenti ancora nel Matchmaking Pro Club: " + queueMatchmakingPC);
+                	//events[0].t = t.current; //genero un nuovo arrivo al Login
+                	//events[0].x = 1;//attivo il nuovo evento al Login
+                	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
+                	s = e;
+                	
+                	if (queueMatchmakingPC >= SERVERS_MATCHMAKING_PRO_CLUB) {//ci sono ancora elementi in coda
+                		System.out.println("Ci sono degli elementi in coda Matchmaking Pro Club da servire, ma ora il server " + s + " si è liberato");
+                		service = getService(rng, INFOQ_SR);
+                		sum[s].service += service;
+                        sum[s].served++;
+                        events[s].t = t.current + service; 
+                        System.out.println("Il server " + s + " concluderà all'istante " + events[s].t);
+                	} else { //altrimenti, se non ci sono persone in coda
+                		System.out.println("Non ci sono altri elementi in coda Matchmaking Pro Club, il server " + s + " diventa disponibile");
+                      	events[s].x = 0; //il server diventa libero	
+                	}
+            	}
+            	
+            } else if (e == 3) {
+            	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA LOGIN------------");
+            	dropoutsLogin++;
+            	dropoutsLoginQueue.remove(0);	
+            } else if (e == 7) {
+            	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA ULTIMATE TEAM------------");
+            	dropoutsUltimateTeam++;
+            	dropoutsUltimateTeamQueue.remove(0);
+            	
+            } else if (e == 11) {
+            	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA STAGIONI------------");
+            	dropoutsStagioni++;
+            	dropoutsStagioniQueue.remove(0);
+            	
+            } else if (e == 15) {
+            	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA PRO CLUB------------");
+            	dropoutsProClub++;
+            	dropoutsProClubQueue.remove(0);
+            	
+            } else if (e == 19) {
+            	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA MATCHMAKING ULTIMATE TEAM------------");
+            	dropoutsMatchmakingUT++;
+            	dropoutsMatchmakingUTQueue.remove(0);
+            	
+            } else if (e == 23) {
+            	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA MATCHMAKING STAGIONI------------");
+            	dropoutsMatchmakingS++;
+            	dropoutsMatchmakingSQueue.remove(0);
+            	
+            } else if (e == 27) {
+            	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA MATCHMAKING PRO CLUB------------");
+            	dropoutsMatchmakingPC++;
+            	dropoutsMatchmakingPCQueue.remove(0);
+            	
             }
         }
         System.out.println("Fine simulazione.");
         
+        /*
         System.out.println("------------------RECUPERO STATISTICHE------------------------------");
         //formattiamo i numeri decimali in stringhe
         DecimalFormat f = new DecimalFormat("###0.00");
@@ -579,34 +1138,15 @@ public class ComputationalModelController {
         System.out.println("  avg service time: " + g.format(allServices / allServed));
         
         System.out.println("");
-	}
+	*/}
 	
 	static boolean generateAbandon(Rngs rngs, int streamIndex, double percentage) {
         rngs.selectStream(1 + streamIndex);
         return rngs.random() <= percentage;
     }
 	
-	int findYellowServer(MsqEvent[] event) {
-        /* -----------------------------------------------------
-         * return the index of the available server idle longest
-         * -----------------------------------------------------
-         */
-        int s;
-
-        int i = 1; //i server gialli iniziano dall'indice 1 in events
-
-        while (event[i].x == 1)  
-            i++;                  
-        s = i;
-        while (i < 2) { //i < 10, perché i server gialli sono da 1 a 10 
-        	i++;                                           
-            if ((event[i].x == 0) && (event[i].t < event[s].t))
-                s = i;
-        }
-        return (s);
-    }
-	
-	int findInfoPointServer(MsqEvent[] event) {
+		
+	int findLoginServer(MsqEvent[] event) {
         /* -----------------------------------------------------
          * return the index of the available server idle longest
          * -----------------------------------------------------
@@ -614,13 +1154,13 @@ public class ComputationalModelController {
 		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
         int s;
 
-        int i = 4; //i server infopoint iniziano dall'indice 12 in events
+        int i = 1; //i server Login iniziano dall'indice 1 in events
 
         while (event[i].x == 1) 
             i++;                       
         s = i;
         //System.out.println("Un servente candidato è il servente " + s);
-        while (i < 5) { //i < 16, perché i server dell'infopoint sono da 12 a 16 ma si entra già facendo i++ quindi deve essere minore stretto di 16  
+        while (i < 2) { //i < 2, perché i server login sono da 1 a 2 ma si entra già facendo i++ quindi deve essere minore stretto di 2  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -628,26 +1168,136 @@ public class ComputationalModelController {
         return (s);
     }
 	
-	int findOrangeServer(MsqEvent[] event) {
-		/* -----------------------------------------------------
+	int findUltimateTeamServer(MsqEvent[] event) {
+        /* -----------------------------------------------------
          * return the index of the available server idle longest
          * -----------------------------------------------------
          */
         int s;
 
-        int i = 7; //i server arancioni iniziano dall'indice 18 in events
+        int i = 5; //i server di Ultimate Team iniziano dall'indice 5 in events
+
+        while (event[i].x == 1)  
+            i++;                  
+        s = i;
+        while (i < 6) { //i < 6, perché i server di Ultimate Team sono da 5 a 6 
+        	i++;                                           
+            if ((event[i].x == 0) && (event[i].t < event[s].t))
+                s = i;
+        }
+        return (s);
+    }
+	
+	int findStagioniServer(MsqEvent[] event) {
+        /* -----------------------------------------------------
+         * return the index of the available server idle longest
+         * -----------------------------------------------------
+         */
+		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
+        int s;
+
+        int i = 9; //i server delle Stagioni iniziano dall'indice 9 in events
 
         while (event[i].x == 1) 
             i++;                       
         s = i;
-        while (i < 8) { //i < 25, perché i server arancioni sono da 18 a 25  
+        //System.out.println("Un servente candidato è il servente " + s);
+        while (i < 10) { //i < 10, perché i server delle Stagioni sono da 9 a 10 ma si entra già facendo i++ quindi deve essere minore stretto di 10  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
         }
-        return (s);		
-	}
+        return (s);
+    }
 	
+	int findProClubServer(MsqEvent[] event) {
+        /* -----------------------------------------------------
+         * return the index of the available server idle longest
+         * -----------------------------------------------------
+         */
+		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
+        int s;
+
+        int i = 13; //i server infopoint iniziano dall'indice 13 in events
+
+        while (event[i].x == 1) 
+            i++;                       
+        s = i;
+        //System.out.println("Un servente candidato è il servente " + s);
+        while (i < 14) { //i < 14, perché i server del Pro Club sono da 13 a 14 ma si entra già facendo i++ quindi deve essere minore stretto di 14  
+            i++;                                             
+            if ((event[i].x == 0) && (event[i].t < event[s].t))
+                s = i;
+        }
+        return (s);
+    }
+	
+	int findMatchmakingUtServer(MsqEvent[] event) {
+        /* -----------------------------------------------------
+         * return the index of the available server idle longest
+         * -----------------------------------------------------
+         */
+		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
+        int s;
+
+        int i = 17; //i server del matchmaking Ultimate Team iniziano dall'indice 17 in events
+
+        while (event[i].x == 1) 
+            i++;                       
+        s = i;
+        //System.out.println("Un servente candidato è il servente " + s);
+        while (i < 18) { //i < 18, perché i server del matchmaking Ultimate Team sono da 17 a 18 ma si entra già facendo i++ quindi deve essere minore stretto di 18  
+            i++;                                             
+            if ((event[i].x == 0) && (event[i].t < event[s].t))
+                s = i;
+        }
+        return (s);
+    }
+	
+	int findMatchmakingStagioniServer(MsqEvent[] event) {
+        /* -----------------------------------------------------
+         * return the index of the available server idle longest
+         * -----------------------------------------------------
+         */
+		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
+        int s;
+
+        int i = 21; //i server Matchmaking Stagioni iniziano dall'indice 21 in events
+
+        while (event[i].x == 1) 
+            i++;                       
+        s = i;
+        //System.out.println("Un servente candidato è il servente " + s);
+        while (i < 22) { //i < 22, perché i server del Matchmaking Stagioni sono da 21 a 22 ma si entra già facendo i++ quindi deve essere minore stretto di 22  
+            i++;                                             
+            if ((event[i].x == 0) && (event[i].t < event[s].t))
+                s = i;
+        }
+        return (s);
+    }
+	
+	int findMatchmakingPCServer(MsqEvent[] event) {
+        /* -----------------------------------------------------
+         * return the index of the available server idle longest
+         * -----------------------------------------------------
+         */
+		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
+        int s;
+
+        int i = 25; //i server Matchmaking Pro Club iniziano dall'indice 25 in events
+
+        while (event[i].x == 1) 
+            i++;                       
+        s = i;
+        //System.out.println("Un servente candidato è il servente " + s);
+        while (i < 26) { //i < 26, perché i server del Matchmaking Pro Club sono da 25 a 26 ma si entra già facendo i++ quindi deve essere minore stretto di 26  
+            i++;                                             
+            if ((event[i].x == 0) && (event[i].t < event[s].t))
+                s = i;
+        }
+        return (s);
+    }
+			
 	double getService(Rngs r, double serviceTime) {
         r.selectStream(3);
         return (exponential(serviceTime, r));
@@ -679,7 +1329,7 @@ public class ComputationalModelController {
 	    while (event[i].x == 0) 
 	    	i++;
 	    e = i;
-	    while (i < ALL_EVENTS_INFOPOINT + ALL_EVENTS_YELLOW + ALL_EVENTS_ORANGE -1) {
+	    while (i < ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB -1) {
 	    	i++;
 	    	if ((event[i].x == 1) && (event[i].t < event[e].t)) {
 	    		e = i;
