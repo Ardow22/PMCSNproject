@@ -192,13 +192,13 @@ public class ComputationalModelController {
         }
         
         System.out.println("\n-----------INIZIALIZZAZIONE EVENTI NELLA SIMULAZIONE-------------");
-        int sumDebug = ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB;
+        int sumDebug = ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB;
         System.out.println("Eventi totali previsti nella simulazione: " + sumDebug);
-        MsqEvent[] events = new MsqEvent[ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB];
-        MsqSum[] sum = new MsqSum[ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB];
+        MsqEvent[] events = new MsqEvent[ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB];
+        MsqSum[] sum = new MsqSum[ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB];
         
         System.out.println("Lista eventi: ");
-        for (int i = 0; i < ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB; i++) {
+        for (int i = 0; i < ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB; i++) {
             events[i] = new MsqEvent();
             sum[i] = new MsqSum();
         }
@@ -230,7 +230,7 @@ public class ComputationalModelController {
         	System.out.println(" ");
         }
         
-        for (int i = 0; i < ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB; i++) {
+        for (int i = 0; i < ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_PRO_CLUB + ALL_EVENTS_MATCHMAKING_UT + ALL_EVENTS_MATCHMAKING_STAGIONI + ALL_EVENTS_MATCHMAKING_PRO_CLUB; i++) {
         	if ((events[i].t != 0) && (events[i].x != 1)) {
         		events[i].t = START;
                 events[i].x = 0;
@@ -325,8 +325,8 @@ public class ComputationalModelController {
         	
         	if(!dropoutsUltimateTeamQueue.isEmpty()) {
         		System.out.println("La lista di abbandoni della coda di Ultimate Team non è vuota");
-        		events[7].t = dropoutsLoginQueue.get(0);
-        		System.out.println("L'evento di abbandono della coda di Ultimate Team avverrà all'istante " + events[3].t);
+        		events[7].t = dropoutsUltimateTeamQueue.get(0);
+        		System.out.println("L'evento di abbandono della coda di Ultimate Team avverrà all'istante " + events[7].t);
         		events[7].x = 1; //attivo l'evento di abbandono
         		
         		System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO Di ULTIMATE TEAM: ");
@@ -343,7 +343,7 @@ public class ComputationalModelController {
         	
         	if(!dropoutsStagioniQueue.isEmpty()) {
         		System.out.println("La lista di abbandoni della coda delle Stagioni non è vuota");
-        		events[11].t = dropoutsLoginQueue.get(0);
+        		events[11].t = dropoutsStagioniQueue.get(0);
         		System.out.println("L'evento di abbandono avverrà della coda delle Stagioni all'istante " + events[11].t);
         		events[11].x = 1; //attivo l'evento di abbandono
         		
@@ -361,7 +361,7 @@ public class ComputationalModelController {
         	
         	if(!dropoutsProClubQueue.isEmpty()) {
         		System.out.println("La lista di abbandoni della coda del Pro Club non è vuota");
-        		events[15].t = dropoutsLoginQueue.get(0);
+        		events[15].t = dropoutsProClubQueue.get(0);
         		System.out.println("L'evento di abbandono avverrà all'istante " + events[15].t);
         		events[15].x = 1; //attivo l'evento di abbandono
         		
@@ -379,7 +379,7 @@ public class ComputationalModelController {
         	
         	if(!dropoutsMatchmakingUTQueue.isEmpty()) {
         		System.out.println("La lista di abbandoni della coda del matchmaking di Ultimate Team non è vuota");
-        		events[19].t = dropoutsLoginQueue.get(0);
+        		events[19].t = dropoutsMatchmakingUTQueue.get(0);
         		System.out.println("L'evento di abbandono della coda del matchmaking di Ultimate Team avverrà all'istante " + events[19].t);
         		events[19].x = 1; //attivo l'evento di abbandono
         		
@@ -397,7 +397,7 @@ public class ComputationalModelController {
         	
         	if(!dropoutsMatchmakingSQueue.isEmpty()) {
         		System.out.println("La lista di abbandoni della coda del matchmaking delle stagioni non è vuota");
-        		events[23].t = dropoutsLoginQueue.get(0);
+        		events[23].t = dropoutsMatchmakingSQueue.get(0);
         		System.out.println("L'evento di abbandono avverrà all'istante " + events[23].t);
         		events[23].x = 1; //attivo l'evento di abbandono
         		
@@ -485,13 +485,13 @@ public class ComputationalModelController {
             	queueUltimateTeam++;
             	System.out.println("Elementi in coda ad Ultimate Team: " + queueUltimateTeam);
             	
-            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	/*System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
             	events[0].t = getArrival(rng, 0, t.current);
             	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
             	if (events[0].t > STOP) {
         			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
                     events[0].x = 0;
-            	}
+            	}*/
             	
             	System.out.println("Numero di server della coda Ultimate Team: " + SERVERS_ULTIMATE_TEAM);
             	if (queueUltimateTeam <= SERVERS_ULTIMATE_TEAM) { //verifico se posso essere servito subito
@@ -511,13 +511,13 @@ public class ComputationalModelController {
             	queueStagioni++;
             	System.out.println("Elementi in coda a Stagioni: " + queueStagioni);
             	
-            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	/*System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
             	events[0].t = getArrival(rng, 0, t.current);
             	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
             	if (events[0].t > STOP) {
         			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
                     events[0].x = 0;
-            	}
+            	}*/
             	
             	System.out.println("Numero di server della coda Stagioni: " + SERVERS_STAGIONI);
             	if (queueStagioni <= SERVERS_STAGIONI) { //verifico se posso essere servito subito
@@ -537,13 +537,13 @@ public class ComputationalModelController {
             	queueProClub++;
             	System.out.println("Elementi in coda a Pro Club: " + queueProClub);
             	
-            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	/*System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
             	events[0].t = getArrival(rng, 0, t.current);
             	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
             	if (events[0].t > STOP) {
         			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
                     events[0].x = 0;
-            	}
+            	}*/
             	
             	System.out.println("Numero di server della coda Pro Club: " + SERVERS_PRO_CLUB);
             	if (queueProClub <= SERVERS_PRO_CLUB) { //verifico se posso essere servito subito
@@ -563,13 +563,13 @@ public class ComputationalModelController {
             	queueMatchmakingUT++;
             	System.out.println("Elementi in coda al matchmaking di Ultimate Team: " + queueMatchmakingUT);
             	
-            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	/*System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
             	events[0].t = getArrival(rng, 0, t.current);
             	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
             	if (events[0].t > STOP) {
         			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
                     events[0].x = 0;
-            	}
+//            	}*/
             	
             	System.out.println("Numero di server della coda di matchmaking di Ultimate Team: " + SERVERS_MATCHMAKING_UT);
             	if (queueMatchmakingUT <= SERVERS_MATCHMAKING_UT) { //verifico se posso essere servito subito
@@ -589,13 +589,13 @@ public class ComputationalModelController {
             	queueMatchmakingS++;
             	System.out.println("Elementi in coda al matchmaking di Stagioni: " + queueMatchmakingS);
             	
-            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	/*System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
             	events[0].t = getArrival(rng, 0, t.current);
             	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
             	if (events[0].t > STOP) {
         			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
                     events[0].x = 0;
-            	}
+            	}*/
             	
             	System.out.println("Numero di server della coda di matchmaking Stagioni: " + SERVERS_MATCHMAKING_STAGIONI);
             	if (queueMatchmakingS <= SERVERS_MATCHMAKING_STAGIONI) { //verifico se posso essere servito subito
@@ -615,13 +615,13 @@ public class ComputationalModelController {
             	queueMatchmakingPC++;
             	System.out.println("Elementi in coda al matchmaking di Pro Club: " + queueMatchmakingPC);
             	
-            	System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
+            	/*System.out.println("-----------------(Intanto pianifico il nuovo evento di arrivo al Login)");
             	events[0].t = getArrival(rng, 0, t.current);
             	System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
             	if (events[0].t > STOP) {
         			System.out.println("--------(però " + events[0].t + " è oltre " + STOP + "quindi non avverrà)");
                     events[0].x = 0;
-            	}
+            	}*/
             	
             	System.out.println("Numero di serventi della coda del matchmaking di Pro Club: " + SERVERS_MATCHMAKING_PRO_CLUB);
             	if (queueMatchmakingPC <= SERVERS_MATCHMAKING_PRO_CLUB) { //verifico se posso essere servito subito
@@ -638,6 +638,7 @@ public class ComputationalModelController {
             	
             } else if ((e >= 1) && (e <= 2)) { //eventi dei server di Login
             	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AL LOGIN------------------");
+            	
             	if (firstCompletionLogin == 0) { //salviamo il primo completamento per le statistiche 
             		firstCompletionLogin = t.current; 
             	}
@@ -670,6 +671,22 @@ public class ComputationalModelController {
                 	//events[0].t = t.current; //genero un nuovo arrivo al Login
                 	//events[0].x = 1;//attivo il nuovo evento al Login
                 	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
+                	
+                	
+                	if ((rng.random() <= 0.9) && (rng.random() >= 0.8)) {
+                		System.out.println("L'utente andrà in coda Ultimate Team");            		
+                	    events[4].t = t.current; //aggiunto un evento alla coda Ultimate Team
+                		events[4].x = 1; //attivazione dell'evento
+                	} else if ((rng.random() <= 0.7) && (rng.random() >= 0.5)) {
+                		System.out.println("L'utente andrà in coda Stagioni");            		
+                	    events[8].t = t.current; //aggiunto un evento alla coda Stagioni
+                		events[8].x = 1; //attivazione dell'evento	
+                	} else {
+                		System.out.println("L'utente andrà in coda Pro Club");
+                		events[12].t = t.current; //aggiunto un evento alla coda Pro Club
+                		events[12].x = 1;//attivazione dell'evento
+                	}
+                	
                 	s = e;
                 	
                 	if (queueLogin >= SERVERS_LOGIN) {//ci sono ancora elementi in coda
@@ -718,6 +735,11 @@ public class ComputationalModelController {
                 	//events[0].t = t.current; //genero un nuovo arrivo al Login
                 	//events[0].x = 1;//attivo il nuovo evento al Login
                 	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
+                	
+                	System.out.println("L'utente andrà in coda matchmaking UT");
+                	events[16].t= t.current;
+                	events[16].x= 1;
+                	
                 	s = e;
                 	
                 	if (queueUltimateTeam >= SERVERS_ULTIMATE_TEAM) {//ci sono ancora elementi in coda
@@ -767,6 +789,11 @@ public class ComputationalModelController {
                 	//events[0].t = t.current; //genero un nuovo arrivo al Login
                 	//events[0].x = 1;//attivo il nuovo evento al Login
                 	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
+                	
+                	System.out.println("L'utente andrà in coda matchmaking Stagioni");
+                	events[20].t= t.current;
+                	events[20].x= 1;
+                	
                 	s = e;
                 	
                 	if (queueStagioni >= SERVERS_STAGIONI) {//ci sono ancora elementi in coda
@@ -816,6 +843,11 @@ public class ComputationalModelController {
                 	//events[0].t = t.current; //genero un nuovo arrivo al Login
                 	//events[0].x = 1;//attivo il nuovo evento al Login
                 	//System.out.println("Generato e attivato un nuovo arrivo alla coda Login che avverrà al tempo: " + t.current);
+                	
+                	System.out.println("L'utente andrà in coda matchmaking Pro Club");
+                	events[24].t= t.current;
+                	events[24].x= 1;
+                	
                 	s = e;
                 	
                 	if (queueProClub >= SERVERS_PRO_CLUB) {//ci sono ancora elementi in coda
