@@ -3,6 +3,7 @@ package logic.PMCSN;
 import java.util.Scanner;
 
 import logic.PMCSN.controller.ComputationalModelController;
+import logic.PMCSN.controller.VerificaController;
 
 public class App 
 {
@@ -25,6 +26,8 @@ public class App
         
         case "2":
         	System.out.println("Hai scelto la simulazione ad orizzonte infinito");
+        	VerificaController vc = new VerificaController();
+        	vc.startAnalysis();
         	break;
         
         case "3":
