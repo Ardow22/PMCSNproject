@@ -21,7 +21,7 @@ class MsqT {
 //classe di supporto ad accumulare le statistiche di un singolo server
 class MsqSum {                      
     double service;  //tempo di servizio totale impiegato                
-    long served;    //numero clienti serviti in totale              
+    long served;    //numero clienti serviti in totale  
 }
 
 //classe per modellare un evento della simulazione
