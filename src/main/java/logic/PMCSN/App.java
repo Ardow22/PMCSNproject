@@ -2,7 +2,7 @@ package logic.PMCSN;
 
 import java.util.Scanner;
 
-import logic.PMCSN.controller.ComputationalModelController;
+
 import logic.PMCSN.controller.FiniteHorizonController;
 import logic.PMCSN.controller.InfiniteHorizonController;
 import logic.PMCSN.controller.TransientController;

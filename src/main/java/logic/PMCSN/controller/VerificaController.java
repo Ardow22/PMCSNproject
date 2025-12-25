@@ -4,12 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import logic.PMCSN.libraries.Msq;
 import logic.PMCSN.libraries.Rngs;
@@ -19,13 +16,10 @@ import logic.PMCSN.model.StagioniNode;
 import logic.PMCSN.model.ClubNode;
 import logic.PMCSN.model.UltimateTeamNode;
 import logic.PMCSN.utils.Estimate;
-import logic.PMCSN.utils.FileUtils;
 import logic.PMCSN.model.Node;
-import logic.PMCSN.model.Observations;
 
-import logic.PMCSN.model.TimeSlot;
 import static logic.PMCSN.model.Constants.*;
-import static logic.PMCSN.model.Constants.PERCENTAGE;
+
 import static logic.PMCSN.model.Events.*;
 
 
@@ -61,8 +55,6 @@ public class VerificaController {
 	
 	static double START = 0.0; //tempo d'inizio della simulazione
     static double sarrival = START; //ultimo tempo in cui è stato generato un arrivo
-    
-    static List<TimeSlot> slotList = new ArrayList<>(); //lista con gli slot temporali da analizzare
 
     private LoginNode loginNode;
 	private StagioniNode StagioniNode;
