@@ -71,18 +71,15 @@ public class VerificaController {
 	
 	public void startAnalysis() {
 		
-		int batchsize = 4096;
-		int numBatches = 128;
-		int warmUpThreshold = (int) ((batchsize*numBatches)*0.275);
+		int batchsize = 200;
+		int numBatches = 50;
 		
 		/*int batchsize = 1024;
 		int numBatches = 50;
-		int warmUpThreshold = 0;*/
 		
 	    //parametri per la simulazione batch
 		/*int batchsize = 60;
-		int numBatches = 5;
-		int warmUpThreshold = (int) ((batchsize*numBatches)*0.275)*/;
+		int numBatches = 5;*/
 		int intervalLength = 480;
 		
 		//primo istante del nuovo batch ed ogni primo arrivo
@@ -134,15 +131,15 @@ public class VerificaController {
 		
         //Setup generatore RNG
 		Rngs rng = new Rngs();
-		long seed = 123456789L;
+		long seed = 123456789;
 		rng.plantSeeds(seed);
 		
         //inizializzazione dei 3 time slot
 		//System.out.println("\n------------INIZIALIZZAZIONE DEI TIME SLOT--------------");
-        for (int f = 0; f < 3; f++) {
+        /*for (int f = 0; f < 3; f++) {
             TimeSlot slot = new TimeSlot(PERCENTAGE[f], 12062, 3600 * f, 3600 * (f + 1) - 1);
             slotList.add(slot);
-        }
+        }*/
         
         /*System.out.println("Elenco dei time slot: ");
         for (TimeSlot sl: slotList) {
@@ -212,8 +209,6 @@ public class VerificaController {
         //System.out.println("La simulazione andrà avanti fino al numero di job prefissati");
         
         int iter = 0;
-        boolean warmUp = true; //all'inizio siamo in warm-up
-        boolean stopWarmUp = false;
         
         int centers = 4;
         int[] batchCounter = new int[centers];
@@ -226,86 +221,79 @@ public class VerificaController {
         	
         	iter++;
         	System.out.println("\n\n-------LA SIMULAZIONE VA AVANTI, QUINDI NUOVA ITERAZIONE, è LA NUMERO: " + iter);
-        	if (warmUp) {
-        		//System.out.println("Siamo ancora in WarmUp, non recuperiamo statisiche");
-        	}
-        	else {
-        		
-        		/*System.out.println("Verifica dei batch...");
-        		System.out.println("Job serviti nel batch Login: " + totalLoginCheck);*/
-        		if (totalLoginCheck != 0 && totalLoginCheck % batchsize == 0) {
-        			batchCounter[0]++;
-        			statsBatch(loginNode, nodeAreaLogin, t.current, totalLoginCheck, 1, 12, sum, events[0].t);
-        			nodeAreaLogin = 0.0;
-        			for (int i = 1; i <= 12; i++) {
-        		        sum[i].service = 0;
-        		        sum[i].served = 0;
-        		    }
-        			totalLoginCheck = 0;
-        			dropoutsLogin = 0;
-        			
-        			currentFirstArrivalTimeLogin = events[0].t;
-        			loginNode.setCurrentFirstArrivalTime(currentFirstArrivalTimeLogin);
-        			
-        			currentBatchStartTime = t.current;
-        			loginNode.setCurrentStartTimeBatch(currentBatchStartTime);
-        		}
-        		//System.out.println("Job serviti nel batch UltimateTeam: " + totalUltimateTeamCheck);
-                if (totalUltimateTeamCheck != 0 && totalUltimateTeamCheck % batchsize == 0) {
-        			
-        			batchCounter[1]++;
-        			statsBatch(UTnode, nodeAreaUltimateTeam, t.current, totalUltimateTeamCheck, 15, 27, sum, events[14].t);
-        			nodeAreaUltimateTeam = 0.0;
-        			for (int i = 15; i <= 27; i++) {
-        		        sum[i].service = 0;
-        		        sum[i].served = 0;
-        		    }
-        			totalUltimateTeamCheck = 0;
-        			dropoutsUltimateTeam = 0;
-        			
-        			currentFirstArrivalTimeUT = events[14].t;
-        			UTnode.setCurrentFirstArrivalTime(currentFirstArrivalTimeUT);
-        			
-        			currentBatchStartTime = t.current;
-        			UTnode.setCurrentStartTimeBatch(currentBatchStartTime);
-        		}
-                //System.out.println("Job serviti nel batch Stagioni: " + totalStagioniCheck);
-                if (totalStagioniCheck != 0 && totalStagioniCheck % batchsize == 0) {
-        			batchCounter[2]++;
-        			statsBatch(StagioniNode, nodeAreaStagioni, t.current, totalStagioniCheck, 30 , 31, sum, events[29].t);
-        			nodeAreaStagioni = 0.0;
-        			for (int i = 30; i <= 31; i++) {
-        		        sum[i].service = 0;
-        		        sum[i].served = 0;
-        		    }
-        			totalStagioniCheck = 0;
-        			dropoutsStagioni = 0;
-        			
-        			currentFirstArrivalTimeStagioni = events[29].t;
-        			StagioniNode.setCurrentFirstArrivalTime(currentFirstArrivalTimeStagioni);
-        			
-        			currentBatchStartTime = t.current;
-        			StagioniNode.setCurrentStartTimeBatch(currentBatchStartTime);
-        		}
-                //System.out.println("Job serviti nel batch Club: " + totalClubCheck);
-                if (totalClubCheck != 0 && totalClubCheck % batchsize == 0) {
-        			batchCounter[3]++;
-        			statsBatch(clubNode, nodeAreaClub, t.current, totalClubCheck, 34, 38, sum, events[33].t);
-        			nodeAreaClub = 0.0;
-        			for (int i = 34; i <= 38; i++) {
-        		        sum[i].service = 0;
-        		        sum[i].served = 0;
-        		    }
-        			totalClubCheck = 0;
-        			dropoutsClub = 0;
-        			
-        			currentFirstArrivalTimeClub = events[33].t;
-        			clubNode.setCurrentFirstArrivalTime(currentFirstArrivalTimeClub);
-        			
-        			currentBatchStartTime = t.current;
-        			clubNode.setCurrentStartTimeBatch(currentBatchStartTime);
-        		}
-        	}
+        	
+        	if (totalLoginCheck != 0 && totalLoginCheck % batchsize == 0) {
+    			batchCounter[0]++;
+    			statsBatch(loginNode, nodeAreaLogin, t.current, totalLoginCheck, 1, 12, sum, events[0].t);
+    			nodeAreaLogin = 0.0;
+    			for (int i = 1; i <= 12; i++) {
+    		        sum[i].service = 0;
+    		        sum[i].served = 0;
+    		    }
+    			totalLoginCheck = 0;
+    			dropoutsLogin = 0;
+    			
+    			currentFirstArrivalTimeLogin = events[0].t;
+    			loginNode.setCurrentFirstArrivalTime(currentFirstArrivalTimeLogin);
+    			
+    			currentBatchStartTime = t.current;
+    			loginNode.setCurrentStartTimeBatch(currentBatchStartTime);
+    		}
+    		//System.out.println("Job serviti nel batch UltimateTeam: " + totalUltimateTeamCheck);
+            if (totalUltimateTeamCheck != 0 && totalUltimateTeamCheck % batchsize == 0) {
+    			
+    			batchCounter[1]++;
+    			statsBatch(UTnode, nodeAreaUltimateTeam, t.current, totalUltimateTeamCheck, 15, 27, sum, events[14].t);
+    			nodeAreaUltimateTeam = 0.0;
+    			for (int i = 15; i <= 27; i++) {
+    		        sum[i].service = 0;
+    		        sum[i].served = 0;
+    		    }
+    			totalUltimateTeamCheck = 0;
+    			dropoutsUltimateTeam = 0;
+    			
+    			currentFirstArrivalTimeUT = events[14].t;
+    			UTnode.setCurrentFirstArrivalTime(currentFirstArrivalTimeUT);
+    			
+    			currentBatchStartTime = t.current;
+    			UTnode.setCurrentStartTimeBatch(currentBatchStartTime);
+    		}
+            //System.out.println("Job serviti nel batch Stagioni: " + totalStagioniCheck);
+            if (totalStagioniCheck != 0 && totalStagioniCheck % batchsize == 0) {
+    			batchCounter[2]++;
+    			statsBatch(StagioniNode, nodeAreaStagioni, t.current, totalStagioniCheck, 30 , 31, sum, events[29].t);
+    			nodeAreaStagioni = 0.0;
+    			for (int i = 30; i <= 31; i++) {
+    		        sum[i].service = 0;
+    		        sum[i].served = 0;
+    		    }
+    			totalStagioniCheck = 0;
+    			dropoutsStagioni = 0;
+    			
+    			currentFirstArrivalTimeStagioni = events[29].t;
+    			StagioniNode.setCurrentFirstArrivalTime(currentFirstArrivalTimeStagioni);
+    			
+    			currentBatchStartTime = t.current;
+    			StagioniNode.setCurrentStartTimeBatch(currentBatchStartTime);
+    		}
+            //System.out.println("Job serviti nel batch Club: " + totalClubCheck);
+            if (totalClubCheck != 0 && totalClubCheck % batchsize == 0) {
+    			batchCounter[3]++;
+    			statsBatch(clubNode, nodeAreaClub, t.current, totalClubCheck, 34, 38, sum, events[33].t);
+    			nodeAreaClub = 0.0;
+    			for (int i = 34; i <= 38; i++) {
+    		        sum[i].service = 0;
+    		        sum[i].served = 0;
+    		    }
+    			totalClubCheck = 0;
+    			dropoutsClub = 0;
+    			
+    			currentFirstArrivalTimeClub = events[33].t;
+    			clubNode.setCurrentFirstArrivalTime(currentFirstArrivalTimeClub);
+    			
+    			currentBatchStartTime = t.current;
+    			clubNode.setCurrentStartTimeBatch(currentBatchStartTime);
+    		}
         	
         	//System.out.println("---Aggiornamento batch completati:");
         	int checkBatchCounter = 1;
@@ -448,16 +436,11 @@ public class VerificaController {
 
             if (e == ALL_EVENTS) {
             	//System.out.println("\n---------L'EVENTO è SAVE_STAT-------------");
-            	if (warmUp) {
-            		//System.out.println("Però non faccio niente, siamo ancora in warmUp");
-            	}
-            	else {
-            		//System.out.println("Salvo le statistiche dei tempi medi di risposta");
-            		//node area/numero di job serviti, ovviamente controllando prima che sia stato servito qualcuno
-            		//di conseguenza ogni intervalLength di tempo aggiungo un valore alla lista di ogni centro
-            		//non sembra esserci azzeramento
-            		//updateObservations();
-            	}
+            	//System.out.println("Salvo le statistiche dei tempi medi di risposta");
+        		//node area/numero di job serviti, ovviamente controllando prima che sia stato servito qualcuno
+        		//di conseguenza ogni intervalLength di tempo aggiungo un valore alla lista di ogni centro
+        		//non sembra esserci azzeramento
+        		//updateObservations();
             	events[ALL_EVENTS].t += intervalLength;
             	//System.out.println("Prossimo evento di SAVE_STAT: " + events[ALL_EVENTS].t);
             } else if (e == 0) { //e == 0
@@ -576,11 +559,11 @@ public class VerificaController {
                 		events[14].x = 1; //attivazione dell'evento
                 	} else if (percorsi == 1) {
                 		//System.out.println("L'utente andrà in coda Club");            		
-                	    events[33].t = t.current; //aggiunto un evento alla coda Stagioni
+                	    events[33].t = t.current; //aggiunto un evento alla coda Club
                 		events[33].x = 1; //attivazione dell'evento	
                 	} else if (percorsi == 2) {
                 		//System.out.println("L'utente andrà in coda Stagioni");
-                		events[29].t = t.current; //aggiunto un evento alla coda Pro Club
+                		events[29].t = t.current; //aggiunto un evento alla coda Stagioni
                 		events[29].x = 1;//attivazione dell'evento
                 	}
                 	
@@ -719,42 +702,40 @@ public class VerificaController {
             	dropoutsClubQueue.remove(0);
   	
             }
-            
-            int minDebug = getMinimumNumberOfJobsServedByCenters(totalLoginCheck, totalUltimateTeamCheck, totalStagioniCheck, totalClubCheck);
-            System.out.println("il centro con il minimo numero di job serviti ha servito il seguente numero di job: " + minDebug);
-            System.out.println("la soglia per far finire il warmup vale " + warmUpThreshold);
-            if (warmUp && getMinimumNumberOfJobsServedByCenters(totalLoginCheck, totalUltimateTeamCheck, totalStagioniCheck, totalClubCheck) >= warmUpThreshold) {
-            	System.out.println("Il WarmUp è finito perché tutti i centri hanno servito almeno il numero di soglia job");
-            	warmUp = false;
-            	stopWarmUp = true;
-            }
-            
-            if (stopWarmUp) {
-    			System.out.println("------------FINE DEL PERIODO DI WARMUP------------------------");
-    			nodeAreaLogin = 0.0; 
-    			nodeAreaUltimateTeam = 0.0; 
-    			nodeAreaStagioni = 0.0; 
-    			nodeAreaClub = 0.0;  
-    			
-    			for (int i = 0; i < sum.length; i++) {
-    		        sum[i].service = 0;
-    		        sum[i].served = 0;
-    		    }
-    			
-    			totalLoginCheck = 0;
-    			totalUltimateTeamCheck = 0;
-    			totalStagioniCheck = 0;
-    			totalClubCheck = 0;
-    			
-    		    dropoutsLogin = 0;
-    		    dropoutsUltimateTeam = 0;
-    			dropoutsStagioni = 0;
-    			dropoutsClub = 0;
-    			
-    			stopWarmUp = false;
-    		}
-           
         }
+        
+        removeWarmUp(loginNode.getPopolazioneDellaCodaBatch());
+        removeWarmUp(loginNode.getPopolazioneDelSistemaBatch());
+        removeWarmUp(loginNode.getTempiDiServizioBatch());
+        removeWarmUp(loginNode.getTempiMediDiRispostaBatch());
+        removeWarmUp(loginNode.getTempiMediInCodaBatch());
+        removeWarmUp(loginNode.getInterarriviBatch());
+        removeWarmUp(loginNode.getUtilizzazioneBatch());
+        
+        removeWarmUp(UTnode.getPopolazioneDellaCodaBatch());
+        removeWarmUp(UTnode.getPopolazioneDelSistemaBatch());
+        removeWarmUp(UTnode.getTempiDiServizioBatch());
+        removeWarmUp(UTnode.getTempiMediDiRispostaBatch());
+        removeWarmUp(UTnode.getTempiMediInCodaBatch());
+        removeWarmUp(UTnode.getInterarriviBatch());
+        removeWarmUp(UTnode.getUtilizzazioneBatch());
+        
+        removeWarmUp(StagioniNode.getPopolazioneDellaCodaBatch());
+        removeWarmUp(StagioniNode.getPopolazioneDelSistemaBatch());
+        removeWarmUp(StagioniNode.getTempiDiServizioBatch());
+        removeWarmUp(StagioniNode.getTempiMediDiRispostaBatch());
+        removeWarmUp(StagioniNode.getTempiMediInCodaBatch());
+        removeWarmUp(StagioniNode.getInterarriviBatch());
+        removeWarmUp(StagioniNode.getUtilizzazioneBatch());
+        
+        removeWarmUp(clubNode.getPopolazioneDellaCodaBatch());
+        removeWarmUp(clubNode.getPopolazioneDelSistemaBatch());
+        removeWarmUp(clubNode.getTempiDiServizioBatch());
+        removeWarmUp(clubNode.getTempiMediDiRispostaBatch());
+        removeWarmUp(clubNode.getTempiMediInCodaBatch());
+        removeWarmUp(clubNode.getInterarriviBatch());
+        removeWarmUp(clubNode.getUtilizzazioneBatch());
+        
         
         
         //LOGIN
@@ -784,13 +765,13 @@ public class VerificaController {
         //ULTIMATE TEAM
         boolean checkACFut = true;
         List<Double> acfValuesUT = new ArrayList<>();
-        acfValuesUT.add(Math.abs(acf(loginNode.getPopolazioneDellaCodaBatch())));
-        acfValuesUT.add(Math.abs(acf(loginNode.getPopolazioneDelSistemaBatch())));
-        acfValuesUT.add(Math.abs(acf(loginNode.getTempiDiServizioBatch())));
-        acfValuesUT.add(Math.abs(acf(loginNode.getTempiMediDiRispostaBatch())));
-        acfValuesUT.add(Math.abs(acf(loginNode.getTempiMediInCodaBatch())));
-        acfValuesUT.add(Math.abs(acf(loginNode.getInterarriviBatch())));
-        acfValuesUT.add(Math.abs(acf(loginNode.getUtilizzazioneBatch())));
+        acfValuesUT.add(Math.abs(acf(UTnode.getPopolazioneDellaCodaBatch())));
+        acfValuesUT.add(Math.abs(acf(UTnode.getPopolazioneDelSistemaBatch())));
+        acfValuesUT.add(Math.abs(acf(UTnode.getTempiDiServizioBatch())));
+        acfValuesUT.add(Math.abs(acf(UTnode.getTempiMediDiRispostaBatch())));
+        acfValuesUT.add(Math.abs(acf(UTnode.getTempiMediInCodaBatch())));
+        acfValuesUT.add(Math.abs(acf(UTnode.getInterarriviBatch())));
+        acfValuesUT.add(Math.abs(acf(UTnode.getUtilizzazioneBatch())));
         for (double a: acfValuesUT) {
         	if (a < 0.2) {
         		checkACFut = false;
@@ -808,13 +789,13 @@ public class VerificaController {
         //STAGIONI
         boolean checkACFstagioni = true;
         List<Double> acfValuesStagioni = new ArrayList<>();
-        acfValuesStagioni.add(Math.abs(acf(loginNode.getPopolazioneDellaCodaBatch())));
-        acfValuesStagioni.add(Math.abs(acf(loginNode.getPopolazioneDelSistemaBatch())));
-        acfValuesStagioni.add(Math.abs(acf(loginNode.getTempiDiServizioBatch())));
-        acfValuesStagioni.add(Math.abs(acf(loginNode.getTempiMediDiRispostaBatch())));
-        acfValuesStagioni.add(Math.abs(acf(loginNode.getTempiMediInCodaBatch())));
-        acfValuesStagioni.add(Math.abs(acf(loginNode.getInterarriviBatch())));
-        acfValuesStagioni.add(Math.abs(acf(loginNode.getUtilizzazioneBatch())));
+        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getPopolazioneDellaCodaBatch())));
+        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getPopolazioneDelSistemaBatch())));
+        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getTempiDiServizioBatch())));
+        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getTempiMediDiRispostaBatch())));
+        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getTempiMediInCodaBatch())));
+        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getInterarriviBatch())));
+        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getUtilizzazioneBatch())));
         for (double a: acfValuesStagioni) {
         	if (a < 0.2) {
         		checkACFstagioni = false;
@@ -832,13 +813,13 @@ public class VerificaController {
         //CLUB
         boolean checkACFclub = true;
         List<Double> acfValuesClub = new ArrayList<>();
-        acfValuesClub.add(Math.abs(acf(loginNode.getPopolazioneDellaCodaBatch())));
-        acfValuesClub.add(Math.abs(acf(loginNode.getPopolazioneDelSistemaBatch())));
-        acfValuesClub.add(Math.abs(acf(loginNode.getTempiDiServizioBatch())));
-        acfValuesClub.add(Math.abs(acf(loginNode.getTempiMediDiRispostaBatch())));
-        acfValuesClub.add(Math.abs(acf(loginNode.getTempiMediInCodaBatch())));
-        acfValuesClub.add(Math.abs(acf(loginNode.getInterarriviBatch())));
-        acfValuesClub.add(Math.abs(acf(loginNode.getUtilizzazioneBatch())));
+        acfValuesClub.add(Math.abs(acf(clubNode.getPopolazioneDellaCodaBatch())));
+        acfValuesClub.add(Math.abs(acf(clubNode.getPopolazioneDelSistemaBatch())));
+        acfValuesClub.add(Math.abs(acf(clubNode.getTempiDiServizioBatch())));
+        acfValuesClub.add(Math.abs(acf(clubNode.getTempiMediDiRispostaBatch())));
+        acfValuesClub.add(Math.abs(acf(clubNode.getTempiMediInCodaBatch())));
+        acfValuesClub.add(Math.abs(acf(clubNode.getInterarriviBatch())));
+        acfValuesClub.add(Math.abs(acf(clubNode.getUtilizzazioneBatch())));
         for (double a: acfValuesClub) {
         	if (a < 0.2) {
         		checkACFclub = false;
@@ -889,6 +870,11 @@ public class VerificaController {
         }
         
     }
+	
+	private void removeWarmUp(List<Double> list) {
+		int warmUpBatches = 50;
+		list.subList(0, warmUpBatches).clear();
+	}
 	
 	public static void writeFile(List<Double> list, String directoryName, String filename) {
         File directory = new File(directoryName);
@@ -966,16 +952,6 @@ public class VerificaController {
 		node.getPopolazioneDellaCodaBatch().add(avgQueuePopulations);
 		node.getUtilizzazioneBatch().add(utilization);
 		node.getInterarriviBatch().add(interarrivals);
-
-		
-	}
-
-	private int getMinimumNumberOfJobsServedByCenters(int totalLoginCheck, int totalUltimateTeamCheck, int totalStagioniCheck, int totalClubCheck) {
-		int minJobs = totalLoginCheck;
-		minJobs = Math.min(minJobs, totalUltimateTeamCheck);
-		minJobs = Math.min(minJobs, totalStagioniCheck);
-		minJobs = Math.min(minJobs, totalClubCheck);
-	    return minJobs;
 	}   
 	
 	static boolean generateAbandon(Rngs rngs, int streamIndex, double percentage) {
@@ -987,12 +963,12 @@ public class VerificaController {
 	    rngs.selectStream(3 + streamIndex);
 	    double r = rngs.random();
 
-	    if (r < 0.7) {
+	    if (r < 0.75) {
 	        return 0; // Ultimate Team
-	    } else if (r < 0.9) {
-	        return 1; // Stagioni
+	    } else if (r < 0.95) {
+	        return 1; // Club
 	    } else {
-	        return 2; // Pro Club
+	        return 2; // Stagioni
 	    }
 	}
 	
@@ -1148,6 +1124,7 @@ public class VerificaController {
         for (int j = 0; j < k; j++) {
             denominator += Math.pow(data.get(j) - mean, 2);
         }
+        System.out.println("Risultato finale: " + numerator/denominator);
         return numerator / denominator;
     }
 

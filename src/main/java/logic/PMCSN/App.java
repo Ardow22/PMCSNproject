@@ -3,18 +3,21 @@ package logic.PMCSN;
 import java.util.Scanner;
 
 import logic.PMCSN.controller.ComputationalModelController;
+import logic.PMCSN.controller.FiniteHorizonController;
+import logic.PMCSN.controller.InfiniteHorizonController;
+import logic.PMCSN.controller.TransientController;
 import logic.PMCSN.controller.VerificaController;
 
-public class App 
-{
+public class App {
+	
     public static void main( String[] args ) {
-        //ComputationalModelController cmc = new ComputationalModelController();
         Scanner input = new Scanner(System.in);
         System.out.println("Benvenuto nel simulatore PMCSN!");
         System.out.println("Puoi scegliere tra le seguenti opzioni: ");
         System.out.println("1 - Verifica");
-        System.out.println("2 - Simulazione ad orizzonte infinito");
-        System.out.println("3 - Simulazione ad orizzonte finito");
+        System.out.println("2 - Analisi transiente");
+        System.out.println("3 - Simulazione ad orizzonte infinito");
+        System.out.println("4 - Simulazione ad orizzonte finito");
         
         System.out.println("Digita un numero: ");
         String choice = input.nextLine();
@@ -22,22 +25,31 @@ public class App
         switch(choice) {
         case "1":
         	System.out.println("Hai scelto la verifica");
-        	break;
-        
-        case "2":
-        	System.out.println("Hai scelto la simulazione ad orizzonte infinito");
         	VerificaController vc = new VerificaController();
         	vc.startAnalysis();
         	break;
         
+        case "2":
+        	System.out.println("Hai scelto l'analisi transiente");
+        	TransientController tc = new TransientController();
+        	tc.startAnalysis();
+        	break;
+        	
         case "3":
+        	System.out.println("Hai scelto la simulazione ad orizzonte infinito");
+        	InfiniteHorizonController ihc = new InfiniteHorizonController();
+        	//ihc.startAnalysis();
+        	break;
+        
+        case "4":
         	System.out.println("Hai scelto la simulazione ad orizzonte finito");
+        	FiniteHorizonController fhc = new FiniteHorizonController();
+        	//fhc.startAnalysis();
         	break;
         	
         default:
         	System.out.println("Non hai scelto nulla, chiusura del programma");
         	System.exit(0);
         }
-        //cmc.startAnalysis();
     }
 }
