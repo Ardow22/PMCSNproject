@@ -31,10 +31,6 @@ public class Events {
     
     public static int ALL_EVENTS = ALL_EVENTS_LOGIN + ALL_EVENTS_ULTIMATE_TEAM + ALL_EVENTS_STAGIONI + ALL_EVENTS_CLUB;
     public static int ALL_EVENTS_WITH_SAVE_STAT = ALL_EVENTS + 1; //l'ultimo evento è l'evento periodico SAVE_STAT per salvare le statisiche
-    public static int EVENT_SERVER_LOGIN;
-    public static int EVENT_SERVER_ULTIMATE_TEAM;
-    public static int EVENT_SERVER_STAGIONI;
-    public static int EVENT_SERVER_PRO_CLUB;
-    		
+    
 
  }

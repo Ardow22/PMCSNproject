@@ -17,7 +17,6 @@ import logic.PMCSN.model.Events;
 import logic.PMCSN.model.LoginNode;
 import logic.PMCSN.model.Node;
 import logic.PMCSN.model.StagioniNode;
-import logic.PMCSN.model.TimeSlot;
 import logic.PMCSN.model.UltimateTeamNode;
 import logic.PMCSN.utils.Estimate;
 
@@ -73,8 +72,6 @@ public class ComputationalModelController {
 	static double START = 0.0; //tempo d'inizio della simulazione
     static double STOP = 6 * 3600; //dopo quanto tempo termina la simulazione
     static double sarrival = START; //ultimo tempo in cui è stato generato un arrivo
-
-    static List<TimeSlot> slotList = new ArrayList<>(); //lista con gli slot temporali da analizzare
 	
     
     public long startSimulation(long seed, Rngs rng, Node loginNode, Node StagioniNode, Node UTnode, Node clubNode) {

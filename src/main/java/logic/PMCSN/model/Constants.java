@@ -16,14 +16,14 @@ public class Constants {
     public static final double not_P7 = 0.02;
     
 
-
-    // ---- TIME SLOT PERCENTAGE ----
-    public static final double [] PERCENTAGE = {0.30, 0.70};
-
     // ---- ARRIVAL RATES [req/sec]----
     // first time window rate
-    public static final double LAMBDA1 = 24;
+    public static final double LAMBDA1 = 4;
 
     // second time window rate
-    public static final double LAMBDA2 = 36;
+    public static final double LAMBDA2 = 8;
+    
+    public static final double LAMBDA3 = 16;
+    
+    public static final double LAMBDA4 = 24;
 }
