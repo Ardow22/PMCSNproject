@@ -18,15 +18,12 @@ public class Constants {
 
 
     // ---- TIME SLOT PERCENTAGE ----
-    public static final double [] PERCENTAGE = { 0.20, 0.70, 0.10};
+    public static final double [] PERCENTAGE = {0.30, 0.70};
 
     // ---- ARRIVAL RATES [req/sec]----
     // first time window rate
-    public static final double LAMBDA1 = 0.24044;
+    public static final double LAMBDA1 = 24;
 
     // second time window rate
-    public static final double LAMBDA2 = 0.84154;
-
-    // third time window rate
-    public static final double LAMBDA3 = 0.12022;
+    public static final double LAMBDA2 = 36;
 }
