@@ -28,6 +28,10 @@ import logic.PMCSN.utils.Rvms;
 
 public class TransientController {
 	
+	static double START = 0.0; //tempo d'inizio della simulazione
+    static double sarrival = START; //ultimo tempo in cui è stato generato un arrivo
+    static double STOP = 172800;
+	
 	public void startAnalysis() {
 		String filenameLogin = "transientLogin.csv";
 		String filenameUT = "transientUT.csv";
@@ -37,13 +41,14 @@ public class TransientController {
 		seeds[0] = 123456789;
 		Rngs r = new Rngs();
 		
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1; i++) {
+			System.out.println("ITERAZIONE: " + i);
 			TransientStats ts = new TransientStats();//va inizializzato dentro al ciclo perché ad ogni nuova run raccolgo nuove statistiche da 0
 			seeds[i+1] = finiteHorizonSimulation(seeds[i], r, ts);
-			writeCsv(ts, seeds[i], filenameLogin);
-			writeCsv(ts, seeds[i], filenameUT);
-			writeCsv(ts, seeds[i], filenameStagioni);
-			writeCsv(ts, seeds[i], filenameClub);
+			writeCsv(ts.getTransientStatsLogin(), seeds[i], filenameLogin);
+			writeCsv(ts.getTransientStatsUT(), seeds[i], filenameUT);
+			writeCsv(ts.getTransientStatsStagioni(), seeds[i], filenameStagioni);
+			writeCsv(ts.getTransientStatsClub(), seeds[i], filenameClub);
 			//write_file(ts, seed) delle statistiche calcolate nella singola run
 			//appendStats salvo tutto: statistiche run singola, statistiche check point
 		}
@@ -60,10 +65,6 @@ public class TransientController {
 		ts.getTransientStatsLogin().add(numero);
 		numero = Math.random();
 		ts.getTransientStatsLogin().add(numero);*/
-		
-		double START = 0.0; //tempo d'inizio della simulazione
-	    double STOP = 86400.0; //dopo quanto tempo termina la simulazione
-	    double sarrival = START; //ultimo tempo in cui è stato generato un arrivo
 		int intervalLength = 480;
 		
 		LoginNode loginNode = new LoginNode();
@@ -125,13 +126,21 @@ public class TransientController {
         MsqT t = new MsqT();
         t.current = START;  
         
-        events[0].t = getArrival(rng, loginNode.getStreamIndex(), t.current, sarrival);
+        events[0].t = getArrival(rng, loginNode.getStreamIndex(), t.current);
         events[0].x = 1;
         
         //EVENTO SAVE_STAT
         //System.out.println("\n------------GENERAZIONE SAVE_STAT----------");        
         events[ALL_EVENTS].t = intervalLength;
         events[ALL_EVENTS].x = 1;
+        
+        /*System.out.println("Nuova lista eventi: ");
+        for (int i = 0; i < events.length; i++) {
+        	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+        	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+        	System.out.println(" ");
+        }*/
+
         
         for (int i = 0; i < ALL_EVENTS; i++) {
         	if ((events[i].t != 0) && (events[i].x != 1)) {
@@ -143,7 +152,7 @@ public class TransientController {
         } 
                 
         /* === INIZIO ITERAZIONE === */
-        System.out.println("\n\n\n----INIZIA LA SIMULAZIONE------");
+        //System.out.println("\n\n\n----INIZIA LA SIMULAZIONE------");
         //System.out.println("La simulazione andrà avanti fino al numero di job prefissati");
         
         int iter = 0;
@@ -153,12 +162,19 @@ public class TransientController {
     	ts.getTransientStatsClub().add(0.0);
     	
         
-        //while (iter != 15) {
+        //while (iter !=15) {
         while(events[0].x != 0 || totalJobsInLogin+totalJobsInUltimateTeam+totalJobsInStagioni+totalJobsInClub != 0) {
         	
         	iter++;
         	System.out.println("\n\n-------LA SIMULAZIONE VA AVANTI, QUINDI NUOVA ITERAZIONE, è LA NUMERO: " + iter);	
-        	       	
+        	     
+        	/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI: ");
+            for (int i = 0; i < events.length; i++) {
+            	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+            	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+            	System.out.println(" ");
+            }*/
+            
             if(!dropoutsLoginQueue.isEmpty()) {
         		events[13].t = dropoutsLoginQueue.get(0);
         		events[13].x = 1; //attivo l'evento di abbandono
@@ -203,8 +219,8 @@ public class TransientController {
             e = nextEvent(events);
             //System.out.println("\n----AGGIORNAMENTO DEL CLOCK------");
             t.next = events[e].t;
-            /*System.out.println("Siamo all'istante: " + t.current);
-            System.out.println("Il prossimo evento (che è quello appena trovato) avverrà all'istante: " + t.next);*/
+            //System.out.println("Siamo all'istante: " + t.current);
+            //System.out.println("Il prossimo evento (che è quello appena trovato) avverrà all'istante: " + t.next);
 
     		//Node area
     		nodeAreaLogin += (t.next - t.current)*totalJobsInLogin;
@@ -214,9 +230,9 @@ public class TransientController {
     		
     		//System.out.println("\n----AGGIORNAMENTO DEL CLOCK------");
             t.current = t.next;
-            /*System.out.println("Siamo all'istante: " + t.current);
-            System.out.println("L'evento successivo doveva avvenire all'istante: " + t.next);
-            System.out.println("I due tempi coincidono, quindi andiamo a processare l'evento " + e);*/
+            System.out.println("Siamo all'istante: " + t.current);
+            //System.out.println("L'evento successivo doveva avvenire all'istante: " + t.next);
+            //System.out.println("I due tempi coincidono, quindi andiamo a processare l'evento " + e);
 
             if (e == ALL_EVENTS) {
             	System.out.println("\n---------L'EVENTO è il SALVATAGGIO STATISTICHE TRANSITORIO-------------");
@@ -237,7 +253,9 @@ public class TransientController {
             	System.out.println("\n---------L'EVENTO è UN NUOVO ARRIVO NEL LOGIN-------------");
             	totalJobsInLogin++;
             	
-            	events[0].t = getArrival(rng, loginNode.getStreamIndex(), t.current, sarrival);
+            	//System.out.println("------(Intanto pianifico il nuovo evento di arrivo, che sarà alla coda Login)");
+            	events[0].t = getArrival(rng, loginNode.getStreamIndex(), t.current);
+            	//System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
             	if (events[0].t > STOP) {
                     events[0].x = 0;
         		}
@@ -256,7 +274,7 @@ public class TransientController {
             	}
             
             } else if (e == 14) { //e == 14, cioè l'arrivo ad Ultimate Team
-            	
+            	System.out.println("\n---------L'EVENTO è UN NUOVO ARRIVO AD ULTIMATE TEAM-------------");
             	events[e].x = 0;//disattivazione dell'evento di arrivo
             	
             	//System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DI ULTIMATE TEAM----------");
@@ -301,7 +319,7 @@ public class TransientController {
             	
             	events[e].x = 0;//disattivazione dell'evento di arrivo
             	
-            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DI PRO CLUB----------");
+            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DI CLUB----------");
             	totalJobsInClub++;
             	/*System.out.println("Elementi nel centro Pro Club: " + totalJobsInClub);
             	System.out.println("Numero di server della coda Pro Club: " + SERVERS_CLUB);*/
@@ -497,7 +515,7 @@ public class TransientController {
 		return rng.getSeed();
 	}
 	
-	private void writeCsv(TransientStats ts, long seed, String filepath) {
+	private void writeCsv(List<Double> list, long seed, String filepath) {
 		/*System.out.println("SEME: " + seed);
 		System.out.println("RIGA DA SCRIVERE: ");
 		for (double d: ts.getTransientStatsLogin()) {
@@ -511,7 +529,7 @@ public class TransientController {
 			if (!fileExists) {
 				//writer.write("seed, valore_1, valore_2, valore_3");
 				StringBuilder header = new StringBuilder("seed");
-	            for (int i = 0; i <= 181; i++) {
+	            for (int i = 0; i <= 361; i++) {
 	            	header.append(",tempo_").append(i*480);
 	            }
 	            writer.write(header.toString());
@@ -520,7 +538,7 @@ public class TransientController {
 			
 			StringBuilder row = new StringBuilder();
 			row.append(seed);
-			for (double d: ts.getTransientStatsLogin()) {
+			for (double d: list) {
 				row.append(",").append(d);
 			}
 			
@@ -538,14 +556,24 @@ public class TransientController {
 	
 	static int generateDestination(Rngs rngs, int streamIndex) {
 	    rngs.selectStream(3 + streamIndex);
+	    //double r = rngs.random() * 0.8;
 	    double r = rngs.random();
+	    
+	    /*if (r < 0.6) {
+	        return 0; // Ultimate Team (60%)
+	    } else if (r < 0.76) {
+	        return 1; // Club (16%)
+	    } else {
+	        return 2; // Stagioni (4%)
+	    }*/
+	    
 
-	    if (r < 0.75) {
+	    if (r < 0.75) { //0.6
 	        return 0; // Ultimate Team
 	    } else if (r < 0.95) {
-	        return 1; // Club
+	        return 1; // Club //0.16
 	    } else {
-	        return 2; // Stagioni
+	        return 2; // Stagioni //0.04
 	    }
 	}
 	
@@ -672,7 +700,7 @@ public class TransientController {
     }
 	
 	//funzione per generare il prossimo arrivo in base allo slot orario
-	private double getArrival(Rngs r, int streamIndex, double currentTime, double sarrival) {
+	private double getArrival(Rngs r, int streamIndex, double currentTime) {
 		r.selectStream(1 + streamIndex);
         sarrival+= exponential(1/24.0, r);
 
