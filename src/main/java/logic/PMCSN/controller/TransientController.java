@@ -44,6 +44,7 @@ public class TransientController {
 		for (int i = 0; i < 1; i++) {
 			System.out.println("ITERAZIONE: " + i);
 			TransientStats ts = new TransientStats();//va inizializzato dentro al ciclo perché ad ogni nuova run raccolgo nuove statistiche da 0
+			sarrival = START;
 			seeds[i+1] = finiteHorizonSimulation(seeds[i], r, ts);
 			writeCsv(ts.getTransientStatsLogin(), seeds[i], filenameLogin);
 			writeCsv(ts.getTransientStatsUT(), seeds[i], filenameUT);

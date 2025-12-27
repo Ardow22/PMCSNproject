@@ -31,8 +31,25 @@ class Acs {
 
   static int K    = 50;               /* K is the maximum lag          */
   static int SIZE = K + 1;
+  
+  private static void generaFileDiTest(String path, int n) throws IOException {
+	  File dir = new File("batch_reports");
+	  if (!dir.exists()) {
+		  dir.mkdirs();
+	  }
+	  
+	  PrintWriter writer = new PrintWriter(new FileWriter(path));
+	  
+	  for (int i = 1; i <= n; i++) {
+		  writer.println(i);
+	  }
+	  writer.close();
+  }
 
   public static void main(String[] args) throws IOException {
+	//String filePath = "batch_reports/delays_ticket_check.dat";  
+	//int numeroDati = 100;
+	//generaFileDiTest(filePath, numeroDati);
 
     int    i = 0;                   /* data point index              */
     int    j;                       /* lag index                     */
@@ -48,7 +65,9 @@ class Acs {
       cosum[j] = 0.0;
 
     String line;
-    InputStreamReader r = new InputStreamReader(new FileInputStream(new File("batch_reports/delays_ticket_check.dat")));
+    InputStreamReader r = new InputStreamReader(new FileInputStream(new File("batch_reports/interarrivi_login.dat")));
+    
+    //InputStreamReader r = new InputStreamReader(new FileInputStream(new File("batch_reports/delays_ticket_check.dat")));
     BufferedReader ReadThis = new BufferedReader(r);
     try {                         /* the first K + 1 data values    */
       while (i < SIZE) {              /* initialize the hold array with */
@@ -97,5 +116,7 @@ class Acs {
     System.out.println("  j (lag)   r[j] (autocorrelation)");
     for (j = 1; j < SIZE; j++)
       System.out.println("  " + j + "          " + g.format(cosum[j] / cosum[0]));
+    
+    System.out.println("il primo lag vale " + g.format(cosum[1]/cosum[0]));
   }
 }

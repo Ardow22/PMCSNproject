@@ -15,7 +15,16 @@ import logic.PMCSN.model.UltimateTeamNode;
 
 public class FiniteHorizonController {
 	
-	public void runAnalysis() {
+	static double START = 0.0; //tempo d'inizio della simulazione
+    static double sarrival = START; //ultimo tempo in cui è stato generato un arrivo
+    static double STOP = 172800;
+	
+	
+	public void startAnalysis() {
+		String filenameLogin = "finiteStatsLogin.csv";
+		String filenameUT = "finiteStatsUT.csv";
+		String filenameStagioni = "finiteStatsStagioni.csv";
+		String filenameClub = "finiteStatsClub.csv";
 		long[] seeds = new long[1024];
 		seeds[0] = 123456789;
 		Rngs r = new Rngs();
@@ -25,6 +34,7 @@ public class FiniteHorizonController {
 			UltimateTeamNode utN = new UltimateTeamNode();
 			ClubNode cn = new ClubNode();
 			StagioniNode sn = new StagioniNode();
+			sarrival = START;
 			seeds[i+1] = finiteHorizonSimulation(seeds[i], r, ln, utN, cn, sn);
 			//writeCsvLogin(ts, seeds[i]);
 			//writeCsvUT(ts, seed);
