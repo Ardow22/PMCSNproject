@@ -94,7 +94,7 @@ public class Autocorrelation {
      // Stampa solo lag j = 1
         System.out.println("\nFile: " + file.getName());
         System.out.println("Per " + n + " dati, media = " + f.format(mean) +
-                ", stdev = " + f.format(Math.sqrt(cosum[0])) + "\n");
+                ", stdev = " + f.format(Math.sqrt(cosum[0])));
 
         int jj = 1; // lag desiderato
         System.out.println("Lag j = " + jj + ", autocorrelazione r[j] = " +

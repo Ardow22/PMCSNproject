@@ -1,5 +1,6 @@
 package logic.PMCSN;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -7,6 +8,7 @@ import logic.PMCSN.controller.FiniteHorizonController;
 import logic.PMCSN.controller.InfiniteHorizonController;
 import logic.PMCSN.controller.TransientController;
 import logic.PMCSN.controller.VerificaController;
+import logic.PMCSN.utils.Autocorrelation;
 
 public class App {
 	
@@ -50,8 +52,15 @@ public class App {
         default:
         	System.out.println("Non hai scelto nulla, chiusura del programma");
         	System.exit(0);
-        }*/
+        }
     	TransientController tc = new TransientController();
-    	tc.startAnalysis();
+    	tc.startAnalysis();*/
+    	Autocorrelation a = new Autocorrelation();
+    	try {
+			a.startCalculate();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }
