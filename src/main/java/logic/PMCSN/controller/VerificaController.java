@@ -63,8 +63,8 @@ public class VerificaController {
 	
 	public void startAnalysis() {
 		
-		int batchsize = 200;
-		int numBatches = 50;
+		int batchsize = 400;
+		int numBatches = 64;
 		
 		/*int batchsize = 1024;
 		int numBatches = 50;
@@ -864,7 +864,7 @@ public class VerificaController {
     }
 	
 	private void removeWarmUp(List<Double> list) {
-		int warmUpBatches = 50;
+		int warmUpBatches = 10;
 		list.subList(0, warmUpBatches).clear();
 	}
 	
@@ -954,6 +954,14 @@ public class VerificaController {
 	static int generateDestination(Rngs rngs, int streamIndex) {
 	    rngs.selectStream(3 + streamIndex);
 	    double r = rngs.random();
+	    
+	    /*if (r < 0.65) {
+	        return 0; // Ultimate Team
+	    } else if (r < 0.85) {
+	        return 1; // Club
+	    } else {
+	        return 2; // Stagioni
+	    }*/
 
 	    if (r < 0.75) {
 	        return 0; // Ultimate Team

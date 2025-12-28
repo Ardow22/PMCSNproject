@@ -13,7 +13,7 @@ import logic.PMCSN.utils.Autocorrelation;
 public class App {
 	
     public static void main( String[] args ) {
-        /*Scanner input = new Scanner(System.in);
+        Scanner input = new Scanner(System.in);
         System.out.println("Benvenuto nel simulatore PMCSN!");
         System.out.println("Puoi scegliere tra le seguenti opzioni: ");
         System.out.println("1 - Verifica");
@@ -53,14 +53,14 @@ public class App {
         	System.out.println("Non hai scelto nulla, chiusura del programma");
         	System.exit(0);
         }
-    	TransientController tc = new TransientController();
-    	tc.startAnalysis();*/
+        /*VerificaController vc = new VerificaController();
+    	vc.startAnalysis();
     	Autocorrelation a = new Autocorrelation();
     	try {
 			a.startCalculate();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
     }
 }
