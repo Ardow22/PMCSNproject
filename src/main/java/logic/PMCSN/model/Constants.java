@@ -1,11 +1,32 @@
 package logic.PMCSN.model;
 
 public class Constants {
+	
+	public static final int NUMBER_OF_CENTERS = 4;
+	
+	//----- TRUNCATED_NORMAL ------
+	//----- LOGIN -------
+	public static final double DEV_ST_LOGIN = 0.20;
+	public static final double LOWER_B_LOGIN = 2.70;
+	public static final double UPPER_B_LOGIN = 4.50;
+	
+	//------ ULTIMATE TEAM ------
+	public static final double DEV_ST_UT = 0.25;
+	public static final double LOWER_B_UT = 3.00;
+	public static final double UPPER_B_UT = 5.00;
+	
+	// ------ STAGIONI -------
+	public static final double DEV_ST_STA = 0.50;
+	public static final double LOWER_B_STA = 5.50;
+	public static final double UPPER_B_STA = 10.0;
+	
+	// ------ CLUB --------
+	public static final double DEV_ST_CLUB = 0.60;
+	public static final double LOWER_B_CLUB = 6.00;
+	public static final double UPPER_B_CLUB = 12.00;
+	
 
     // ---- ABANDON PROB ----
-    //probabilità di abbandonare il sistema dopo il login
-    public static final double not_P1 = 0.2;
-    
     //probabilità di abbandonare il sistema dopo i controlli Ultimate Team
     public static final double not_P5 = 0.03;
     
@@ -16,14 +37,12 @@ public class Constants {
     public static final double not_P7 = 0.02;
     
 
-    // ---- ARRIVAL RATES [req/sec]----
-    // first time window rate
-    public static final double LAMBDA1 = 4;
-
-    // second time window rate
-    public static final double LAMBDA2 = 8;
+    // ---- TASSI DI ARRIVO [req/sec]----    
+    public static final double LAMBDA = 1.53;
     
-    public static final double LAMBDA3 = 16;
+    public static final double LAMBDA_VALID_1 = 16.0;
     
-    public static final double LAMBDA4 = 24;
+    public static final double LMABDA_VALID_2 = 32.0;
+    
+    
 }

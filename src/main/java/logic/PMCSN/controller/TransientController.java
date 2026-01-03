@@ -1,11 +1,26 @@
 package logic.PMCSN.controller;
 
-import static logic.PMCSN.model.Constants.not_P1;
 import static logic.PMCSN.model.Constants.not_P5;
 import static logic.PMCSN.model.Constants.not_P6;
 import static logic.PMCSN.model.Constants.not_P7;
 import static logic.PMCSN.model.Events.ALL_EVENTS;
 import static logic.PMCSN.model.Events.ALL_EVENTS_WITH_SAVE_STAT;
+import static logic.PMCSN.model.Events.INDEX_ARRIVAL_CLUB;
+import static logic.PMCSN.model.Events.INDEX_ARRIVAL_LOGIN;
+import static logic.PMCSN.model.Events.INDEX_ARRIVAL_STAGIONI;
+import static logic.PMCSN.model.Events.INDEX_ARRIVAL_ULTIMATE_TEAM;
+import static logic.PMCSN.model.Events.INDEX_DROPOUT_CLUB;
+import static logic.PMCSN.model.Events.INDEX_DROPOUT_LOGIN;
+import static logic.PMCSN.model.Events.INDEX_DROPOUT_STAGIONI;
+import static logic.PMCSN.model.Events.INDEX_DROPOUT_ULTIMATE_TEAM;
+import static logic.PMCSN.model.Events.INDEX_FIRST_SERVER_CLUB;
+import static logic.PMCSN.model.Events.INDEX_FIRST_SERVER_LOGIN;
+import static logic.PMCSN.model.Events.INDEX_FIRST_SERVER_STAGIONI;
+import static logic.PMCSN.model.Events.INDEX_FIRST_SERVER_ULTIMATE_TEAM;
+import static logic.PMCSN.model.Events.INDEX_LAST_SERVER_CLUB;
+import static logic.PMCSN.model.Events.INDEX_LAST_SERVER_LOGIN;
+import static logic.PMCSN.model.Events.INDEX_LAST_SERVER_STAGIONI;
+import static logic.PMCSN.model.Events.INDEX_LAST_SERVER_ULTIMATE_TEAM;
 import static logic.PMCSN.model.Events.SERVERS_CLUB;
 import static logic.PMCSN.model.Events.SERVERS_LOGIN;
 import static logic.PMCSN.model.Events.SERVERS_STAGIONI;
@@ -26,11 +41,15 @@ import logic.PMCSN.model.TransientStats;
 import logic.PMCSN.model.UltimateTeamNode;
 import logic.PMCSN.utils.Rvms;
 
+import static logic.PMCSN.model.Constants.*;
+
 public class TransientController {
 	
 	static double START = 0.0; //tempo d'inizio della simulazione
     static double sarrival = START; //ultimo tempo in cui è stato generato un arrivo
-    static double STOP = 172800;
+    static double STOP = 21600;
+    static int INTERVAL_DATA = 20;
+    static double COLUMNS = (STOP/INTERVAL_DATA) + 1;
 	
 	public void startAnalysis() {
 		String filenameLogin = "transientLogin.csv";
@@ -66,7 +85,6 @@ public class TransientController {
 		ts.getTransientStatsLogin().add(numero);
 		numero = Math.random();
 		ts.getTransientStatsLogin().add(numero);*/
-		int intervalLength = 480;
 		
 		LoginNode loginNode = new LoginNode();
 		StagioniNode StagioniNode = new StagioniNode();
@@ -132,7 +150,7 @@ public class TransientController {
         
         //EVENTO SAVE_STAT
         //System.out.println("\n------------GENERAZIONE SAVE_STAT----------");        
-        events[ALL_EVENTS].t = intervalLength;
+        events[ALL_EVENTS].t = INTERVAL_DATA;
         events[ALL_EVENTS].x = 1;
         
         /*System.out.println("Nuova lista eventi: ");
@@ -175,45 +193,78 @@ public class TransientController {
             	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
             	System.out.println(" ");
             }*/
-            
-            if(!dropoutsLoginQueue.isEmpty()) {
-        		events[13].t = dropoutsLoginQueue.get(0);
-        		events[13].x = 1; //attivo l'evento di abbandono
+        	
+        	if(!dropoutsLoginQueue.isEmpty()) {
+        		//System.out.println("La lista di abbandoni del Login non è vuota");
+        		events[INDEX_DROPOUT_LOGIN].t = dropoutsLoginQueue.get(0);
+        		//System.out.println("L'evento di abbandono del Login avverrà all'istante " + events[13].t);
+        		events[INDEX_DROPOUT_LOGIN].x = 1; //attivo l'evento di abbandono
+        		
+        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DEL LOGIN: ");
+                for (int i = 0; i < events.length; i++) {
+                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+                	System.out.println(" ");
+                }*/
         	}
         	else {
-        		events[13].x = 0; //disattivo l'evento di abbandono
+        		//System.out.println("La lista di abbandoni del Login è vuota, l'evento viene disattivato");
+        		events[INDEX_DROPOUT_LOGIN].x = 0; //disattivo l'evento di abbandono
         	}
         	
         	if(!dropoutsUltimateTeamQueue.isEmpty()) {
-        		events[28].t = dropoutsUltimateTeamQueue.get(0);
-        		events[28].x = 1; //attivo l'evento di abbandono
+        		//System.out.println("La lista di abbandoni della coda di Ultimate Team non è vuota");
+        		events[INDEX_DROPOUT_ULTIMATE_TEAM].t = dropoutsUltimateTeamQueue.get(0);
+        		//System.out.println("L'evento di abbandono della coda di Ultimate Team avverrà all'istante " + events[28].t);
+        		events[INDEX_DROPOUT_ULTIMATE_TEAM].x = 1; //attivo l'evento di abbandono
+        		
+        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO Di ULTIMATE TEAM: ");
+                for (int i = 0; i < events.length; i++) {
+                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+                	System.out.println(" ");
+                }*/
         	}
         	else {
-        		events[28].x = 0; //disattivo l'evento di abbandono
+        		//System.out.println("La lista di abbandoni della coda di Ultimate Team è vuota, l'evento viene disattivato");
+        		events[INDEX_DROPOUT_ULTIMATE_TEAM].x = 0; //disattivo l'evento di abbandono
         	}
         	
         	if(!dropoutsStagioniQueue.isEmpty()) {
         		//System.out.println("La lista di abbandoni della coda delle Stagioni non è vuota");
-        		events[32].t = dropoutsStagioniQueue.get(0);
+        		events[INDEX_DROPOUT_STAGIONI].t = dropoutsStagioniQueue.get(0);
         		//System.out.println("L'evento di abbandono avverrà della coda delle Stagioni all'istante " + events[32].t);
-        		events[32].x = 1; //attivo l'evento di abbandono
+        		events[INDEX_DROPOUT_STAGIONI].x = 1; //attivo l'evento di abbandono
+        		
+        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DELLE STAGIONI: ");
+                for (int i = 0; i < events.length; i++) {
+                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+                	System.out.println(" ");
+                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda delle Stagioni è vuota, l'evento viene disattivato");
-        		events[32].x = 0; //disattivo l'evento di abbandono
+        		events[INDEX_DROPOUT_STAGIONI].x = 0; //disattivo l'evento di abbandono
         	}
         	
         	if(!dropoutsClubQueue.isEmpty()) {
         		//System.out.println("La lista di abbandoni della coda di Club non è vuota");
-        		events[39].t = dropoutsClubQueue.get(0);
+        		events[INDEX_DROPOUT_CLUB].t = dropoutsClubQueue.get(0);
         		//System.out.println("L'evento di abbandono avverrà all'istante " + events[39].t);
-        		events[39].x = 1; //attivo l'evento di abbandono
-            }
+        		events[INDEX_DROPOUT_CLUB].x = 1; //attivo l'evento di abbandono
+        		
+        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DI CLUB: ");
+                for (int i = 0; i < events.length; i++) {
+                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
+                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
+                	System.out.println(" ");
+                }*/
+        	}
         	else {
         		//System.out.println("La lista di abbandoni della coda di Club è vuota, l'evento viene disattivato");
-        		events[39].x = 0; //disattivo l'evento di abbandono
+        		events[INDEX_DROPOUT_CLUB].x = 0; //disattivo l'evento di abbandono
         	}
-        	
         	
         	
             // Trova evento più imminente
@@ -245,25 +296,27 @@ public class TransientController {
             	ts.getTransientStatsUT().add(responseTimeUT);
             	ts.getTransientStatsStagioni().add(responseTimeStagioni);
             	ts.getTransientStatsClub().add(responseTimeClub);
-            	events[ALL_EVENTS].t += intervalLength;
+            	events[ALL_EVENTS].t += INTERVAL_DATA;
             	if (events[ALL_EVENTS].t > STOP) {
             		events[ALL_EVENTS].x = 0;
             	}
             	//System.out.println("Prossimo evento di SAVE_STAT: " + events[ALL_EVENTS].t);
-            } else if (e == 0) { //e == 0
+            } else if (e == INDEX_ARRIVAL_LOGIN) { //e == 0
             	System.out.println("\n---------L'EVENTO è UN NUOVO ARRIVO NEL LOGIN-------------");
             	totalJobsInLogin++;
+            	/*System.out.println("Job nel nodo Login: " + totalJobsInLogin);
+            	System.out.println("Numero di serventi della coda Login: " + SERVERS_LOGIN);
             	
-            	//System.out.println("------(Intanto pianifico il nuovo evento di arrivo, che sarà alla coda Login)");
-            	events[0].t = getArrival(rng, loginNode.getStreamIndex(), t.current);
+            	System.out.println("------(Intanto pianifico il nuovo evento di arrivo, che sarà alla coda Login)");*/
+            	events[INDEX_ARRIVAL_LOGIN].t = getArrival(rng, loginNode.getStreamIndex(), t.current);
             	//System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
-            	if (events[0].t > STOP) {
-                    events[0].x = 0;
-        		}
+            	if (events[INDEX_ARRIVAL_LOGIN].t > STOP) {
+            		events[INDEX_ARRIVAL_LOGIN].x = 0;
+            	} 
             	            	
             	if (totalJobsInLogin <= SERVERS_LOGIN) {
             		//System.out.println("Ci sono meno utenti nel centro di quanti server totali");
-            		service = getService(rng, loginNode.getStreamIndex(), loginNode.getServiceTime());
+            		service = getServiceLogin(rng, loginNode.getStreamIndex(), loginNode.getServiceTime(), rvms);
             		//System.out.println("Si cerca un server libero");
             		s = findLoginServer(events);
             		//System.out.println("Abbiamo trovato il server numero " + s);
@@ -274,8 +327,8 @@ public class TransientController {
                     events[s].x = 1;
             	}
             
-            } else if (e == 14) { //e == 14, cioè l'arrivo ad Ultimate Team
-            	System.out.println("\n---------L'EVENTO è UN NUOVO ARRIVO AD ULTIMATE TEAM-------------");
+            } else if (e == INDEX_ARRIVAL_ULTIMATE_TEAM) { //e == 14, cioè l'arrivo ad Ultimate Team
+            	
             	events[e].x = 0;//disattivazione dell'evento di arrivo
             	
             	//System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DI ULTIMATE TEAM----------");
@@ -284,7 +337,7 @@ public class TransientController {
             	System.out.println("Numero di server della coda Ultimate Team: " + SERVERS_ULTIMATE_TEAM);*/
             	
             	if (totalJobsInUltimateTeam <= SERVERS_ULTIMATE_TEAM) { //verifico se posso essere servito subito
-            		service = getService(rng, UTnode.getStreamIndex(), UTnode.getServiceTime());
+            		service = getServiceUT(rng, UTnode.getStreamIndex(), UTnode.getServiceTime(), rvms);
             		//System.out.println("Si cerca un server libero tra i " + SERVERS_ULTIMATE_TEAM);
             		s = findUltimateTeamServer(events);
             		//System.out.println("Abbiamo trovato il server numero " + s);
@@ -295,7 +348,7 @@ public class TransientController {
                     events[s].x = 1;
             	}	
             
-            } else if (e == 29) { // e == 29 arrivo alla coda Stagioni
+            } else if (e == INDEX_ARRIVAL_STAGIONI) { // e == 29 arrivo alla coda Stagioni
             	
             	events[e].x = 0;//disattivazione dell'evento di arrivo
             	
@@ -305,7 +358,7 @@ public class TransientController {
             	System.out.println("Numero di server della coda Stagioni: " + SERVERS_STAGIONI);*/
             	
             	if (totalJobsInStagioni <= SERVERS_STAGIONI) { //verifico se posso essere servito subito
-            		service = getService(rng, StagioniNode.getStreamIndex(), StagioniNode.getServiceTime());
+            		service = getServiceStagioni(rng, StagioniNode.getStreamIndex(), StagioniNode.getServiceTime(), rvms);
             		//System.out.println("Si cerca un server libero tra i " + SERVERS_STAGIONI);
             		s = findStagioniServer(events);
             		//System.out.println("Abbiamo trovato il server numero " + s);
@@ -316,17 +369,17 @@ public class TransientController {
                     events[s].x = 1;
             	}
             	
-            } else if (e == 33) { //e == 33 arrivo alla coda Club
+            } else if (e == INDEX_ARRIVAL_CLUB) { //e == 35 arrivo alla coda Club
             	
             	events[e].x = 0;//disattivazione dell'evento di arrivo
             	
-            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DI CLUB----------");
+            	System.out.println("\n--------------L'EVENTO è UN NUOVO ARRIVO ALLA CODA DI PRO CLUB----------");
             	totalJobsInClub++;
             	/*System.out.println("Elementi nel centro Pro Club: " + totalJobsInClub);
             	System.out.println("Numero di server della coda Pro Club: " + SERVERS_CLUB);*/
             	
             	if (totalJobsInClub <= SERVERS_CLUB) { //verifico se posso essere servito subito
-            		service = getService(rng, clubNode.getStreamIndex(), clubNode.getServiceTime());
+            		service = getServiceClub(rng, clubNode.getStreamIndex(), clubNode.getServiceTime(), rvms);
             		//System.out.println("Si cerca un server libero tra i " + SERVERS_CLUB);
             		s = findClubServer(events);
             		//System.out.println("Abbiamo trovato il server numero " + s);
@@ -339,47 +392,55 @@ public class TransientController {
                     events[s].x = 1;
             	}
             	
-            } else if ((e >= 1) && (e <= 12)) { //eventi dei server di Login
+            } else if ((e >= INDEX_FIRST_SERVER_LOGIN) && (e <= INDEX_LAST_SERVER_LOGIN)) { //eventi dei server di Login, 1 e 12
             	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AL LOGIN------------------");
             	
             	if (firstCompletionLogin == 0) { //salviamo il primo completamento per le statistiche 
             		firstCompletionLogin = t.current; 
             	}
-            	
-            	boolean abandon = generateAbandon(rng, loginNode.getStreamIndex(), not_P1);//qua si decide se l'utente abbandona oppure supera i controlli
-            	if (abandon) { //se l'utente non supera i controlli
+            	boolean abandon = false;
+            	//int percorsi = generateDestination(rng, loginNode.getStreamIndex());
+            	//boolean abandon = generateAbandon(rng, loginNode.getStreamIndex(), not_P1);//qua si decide se l'utente abbandona oppure supera i controlli
+            	if (abandon == true) { //se l'utente non supera i controlli
             		//System.out.println("L'utente non ha superato i controlli del Login");
             		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
             		//System.out.println("Prossimo evento di abbandono: " + abandonTime);
             		dropoutsLoginQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni	
             	}
             	else {
+            		int percorsi = generateDestination(rng, loginNode.getStreamIndex());
             		totalJobsInLogin--;//diminuisco di 1 il numero di utenti in questo centro
             		totalLoginCheck++;//aumento il numero di utenti serviti in questo centro
                 	/*System.out.println("Utenti serviti nel Login: " + totalLoginCheck);
                 	System.out.println("Utenti ancora nel Login: " + totalJobsInLogin);*/
                 	
-                	int percorsi = generateDestination(rng, loginNode.getStreamIndex());
+                	//int percorsi = generateDestination(rng, loginNode.getStreamIndex());
+            		if (percorsi == -1) { //se l'utente non supera i controlli
+                		//System.out.println("L'utente non ha superato i controlli del Login");
+                		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
+                		//System.out.println("Prossimo evento di abbandono: " + abandonTime);
+                		dropoutsLoginQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni	
+                	}
                 	               	
-                	if (percorsi == 0) {
+            		else if (percorsi == 0) {
                 		//System.out.println("L'utente andrà in coda Ultimate Team");            		
-                	    events[14].t = t.current; //aggiunto un evento alla coda Ultimate Team
-                		events[14].x = 1; //attivazione dell'evento
+                	    events[INDEX_ARRIVAL_ULTIMATE_TEAM].t = t.current; //aggiunto un evento alla coda Ultimate Team, cioè l'evento 14
+                		events[INDEX_ARRIVAL_ULTIMATE_TEAM].x = 1; //attivazione dell'evento 14
                 	} else if (percorsi == 1) {
                 		//System.out.println("L'utente andrà in coda Club");            		
-                	    events[33].t = t.current; //aggiunto un evento alla coda Stagioni
-                		events[33].x = 1; //attivazione dell'evento	
+                	    events[INDEX_ARRIVAL_CLUB].t = t.current; //aggiunto un evento alla coda Club, cioè l'evento 35
+                		events[INDEX_ARRIVAL_CLUB].x = 1; //attivazione dell'evento 35
                 	} else if (percorsi == 2) {
                 		//System.out.println("L'utente andrà in coda Stagioni");
-                		events[29].t = t.current; //aggiunto un evento alla coda Pro Club
-                		events[29].x = 1;//attivazione dell'evento
+                		events[INDEX_ARRIVAL_STAGIONI].t = t.current; //aggiunto un evento alla coda Stagioni, cioè l'evento 29
+                		events[INDEX_ARRIVAL_STAGIONI].x = 1;//attivazione dell'evento 29
                 	}
                 	
                 	s = e;
                 	
                 	if (totalJobsInLogin >= SERVERS_LOGIN) {//ci sono ancora elementi in coda
                 		//System.out.println("Ci sono degli elementi in coda Login da servire, ma ora il server " + s + " si è liberato");
-                		service = getService(rng, loginNode.getStreamIndex(), loginNode.getServiceTime());
+                		service = getServiceLogin(rng, loginNode.getStreamIndex(), loginNode.getServiceTime(), rvms);
                 		sum[s].service += service;
                         sum[s].served++;
                         events[s].t = t.current + service;
@@ -389,7 +450,7 @@ public class TransientController {
                       	events[s].x = 0; //il server diventa libero	
                 	}
             	}
-        	} else if ((e >= 15) && (e <= 27)) { //eventi dei server di Ultimate Team
+        	} else if ((e >= INDEX_FIRST_SERVER_ULTIMATE_TEAM) && (e <= INDEX_LAST_SERVER_ULTIMATE_TEAM)) { //eventi dei server di Ultimate Team, 15 E 27
         		//System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AD ULTIMATE TEAM------------------");
             	if (firstCompletionUltimateTeam == 0) { //salviamo il primo completamento per le statistiche 
             		firstCompletionUltimateTeam = t.current; 
@@ -411,7 +472,7 @@ public class TransientController {
                 	
                 	if (totalJobsInUltimateTeam >= SERVERS_ULTIMATE_TEAM) {//ci sono ancora elementi in coda
                 		//System.out.println("Ci sono degli elementi in coda Ultimate Teame da servire, ma ora il server " + s + " si è liberato");
-                		service = getService(rng, UTnode.getStreamIndex(), UTnode.getServiceTime());
+                		service = getServiceUT(rng, UTnode.getStreamIndex(), UTnode.getServiceTime(), rvms);
                 		sum[s].service += service;
                         sum[s].served++;
                         events[s].t = t.current + service; 
@@ -422,7 +483,7 @@ public class TransientController {
                 	}
             	}
             	
-            } else if ((e >= 30) && (e <= 31)) { //eventi dei server di Stagioni
+            } else if ((e >= INDEX_FIRST_SERVER_STAGIONI) && (e <= INDEX_LAST_SERVER_STAGIONI)) { //eventi dei server di Stagioni, 30 e 33
             	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER DI STAGIONI------------------");
             	if (firstCompletionStagioni == 0) { //salviamo il primo completamento per le statistiche 
             		firstCompletionStagioni = t.current; 
@@ -445,7 +506,7 @@ public class TransientController {
                 	
                 	if (totalJobsInStagioni >= SERVERS_STAGIONI) {//ci sono ancora elementi in coda
                 		//System.out.println("Ci sono degli elementi in coda Stagioni da servire, ma ora il server " + s + " si è liberato");
-                		service = getService(rng, StagioniNode.getStreamIndex(), StagioniNode.getServiceTime());
+                		service = getServiceStagioni(rng, StagioniNode.getStreamIndex(), StagioniNode.getServiceTime(), rvms);
                 		sum[s].service += service;
                         sum[s].served++;
                         events[s].t = t.current + service; 
@@ -456,7 +517,7 @@ public class TransientController {
                 	}
             	}
             	
-            } else if ((e >= 34) && (e <= 38)) { //eventi dei server di Pro Club
+            } else if ((e >= INDEX_FIRST_SERVER_CLUB) && (e <= INDEX_LAST_SERVER_CLUB)) { //eventi dei server di Club, 36 e 40
             	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER DI CLUB------------------");
             	if (firstCompletionClub == 0) { //salviamo il primo completamento per le statistiche 
             		firstCompletionClub = t.current; 
@@ -479,7 +540,7 @@ public class TransientController {
                 	
                 	if (totalJobsInClub >= SERVERS_CLUB) {//ci sono ancora elementi in coda
                 		//System.out.println("Ci sono degli elementi Club da servire, ma ora il server " + s + " si è liberato");
-                		service = getService(rng, clubNode.getStreamIndex(), clubNode.getServiceTime());
+                		service = getServiceClub(rng, clubNode.getStreamIndex(), clubNode.getServiceTime(), rvms);
                 		sum[s].service += service;
                         sum[s].served++;
                         events[s].t = t.current + service;
@@ -490,26 +551,25 @@ public class TransientController {
                 	}
             	}
             	
-            } else if (e == 13) {
+            } else if (e == INDEX_DROPOUT_LOGIN) { //e == 13
             	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA LOGIN------------");
             	dropoutsLogin++;
             	dropoutsLoginQueue.remove(0);	
-            } else if (e == 28) {
+            } else if (e == INDEX_DROPOUT_ULTIMATE_TEAM) { //e == 28
             	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA ULTIMATE TEAM------------");
             	dropoutsUltimateTeam++;
             	dropoutsUltimateTeamQueue.remove(0);
             	
-            } else if (e == 32) {
+            } else if (e == INDEX_DROPOUT_STAGIONI) { //e == 34
             	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA STAGIONI------------");
             	dropoutsStagioni++;
             	dropoutsStagioniQueue.remove(0);
             	
-            } else if (e == 39) {
+            } else if (e == INDEX_DROPOUT_CLUB) { //e == 41
             	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA CLUB------------");
             	dropoutsClub++;
-            	dropoutsClubQueue.remove(0);
-  	
-            }   
+            	dropoutsClubQueue.remove(0);	
+            }
         }
         
 		rng.selectStream(255);
@@ -517,11 +577,6 @@ public class TransientController {
 	}
 	
 	private void writeCsv(List<Double> list, long seed, String filepath) {
-		/*System.out.println("SEME: " + seed);
-		System.out.println("RIGA DA SCRIVERE: ");
-		for (double d: ts.getTransientStatsLogin()) {
-			System.out.println(d);
-		}*/
 		File file = new File(filepath);
 		boolean fileExists = file.exists();
 
@@ -530,8 +585,8 @@ public class TransientController {
 			if (!fileExists) {
 				//writer.write("seed, valore_1, valore_2, valore_3");
 				StringBuilder header = new StringBuilder("seed");
-	            for (int i = 0; i <= 361; i++) {
-	            	header.append(",tempo_").append(i*480);
+	            for (int i = 0; i <= COLUMNS; i++) {
+	            	header.append(",tempo_").append(i*INTERVAL_DATA);
 	            }
 	            writer.write(header.toString());
 				writer.newLine();
@@ -557,29 +612,19 @@ public class TransientController {
 	
 	static int generateDestination(Rngs rngs, int streamIndex) {
 	    rngs.selectStream(3 + streamIndex);
-	    //double r = rngs.random() * 0.8;
 	    double r = rngs.random();
 	    
-	    /*if (r < 0.6) {
-	        return 0; // Ultimate Team (60%)
-	    } else if (r < 0.76) {
-	        return 1; // Club (16%)
-	    } else {
-	        return 2; // Stagioni (4%)
-	    }*/
-	    
-
-	    if (r < 0.75) { //0.6
+	    if (r < 0.6) { 
 	        return 0; // Ultimate Team
-	    } else if (r < 0.95) {
-	        return 1; // Club //0.16
-	    } else {
-	        return 2; // Stagioni //0.04
-	    }
-	}
-	
+	    } else if (r < 0.8) {
+	        return 1; // Club
+	    } else if (r < 0.9) {
+	        return 2; // Stagioni
+	    } else return -1;//abbandono
+	    
+	}	
 		
-	static int findLoginServer(MsqEvent[] event) {
+	int findLoginServer(MsqEvent[] event) {
         /* -----------------------------------------------------
          * return the index of the available server idle longest
          * -----------------------------------------------------
@@ -587,13 +632,13 @@ public class TransientController {
 		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
         int s;
 
-        int i = 1; //i server Login iniziano dall'indice 1 in events
+        int i = INDEX_FIRST_SERVER_LOGIN; //i server Login iniziano dall'indice 1 in events
 
         while (event[i].x == 1) 
             i++;                       
         s = i;
         //System.out.println("Un servente candidato è il servente " + s);
-        while (i < 12) { //i < 12, perché i server login sono da 1 a 12 ma si entra già facendo i++ quindi deve essere minore stretto di 12  
+        while (i < INDEX_LAST_SERVER_LOGIN) { //i < 12, perché i server login sono da 1 a 12 ma si entra già facendo i++ quindi deve essere minore stretto di 12  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -601,19 +646,19 @@ public class TransientController {
         return (s);
     }
 	
-	static int findUltimateTeamServer(MsqEvent[] event) {
+	int findUltimateTeamServer(MsqEvent[] event) {
         /* -----------------------------------------------------
          * return the index of the available server idle longest
          * -----------------------------------------------------
          */
         int s;
 
-        int i = 15; //i server di Ultimate Team iniziano dall'indice 15 in events
+        int i = INDEX_FIRST_SERVER_ULTIMATE_TEAM; //i server di Ultimate Team iniziano dall'indice 15 in events
 
         while (event[i].x == 1)  
             i++;                  
         s = i;
-        while (i < 27) { //i < 27, perché i server di Ultimate Team sono da 15 a 27 
+        while (i < INDEX_LAST_SERVER_ULTIMATE_TEAM) { //i < 27, perché i server di Ultimate Team sono da 15 a 27 
         	i++;                                           
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -621,7 +666,7 @@ public class TransientController {
         return (s);
     }
 	
-	static int findStagioniServer(MsqEvent[] event) {
+	int findStagioniServer(MsqEvent[] event) {
         /* -----------------------------------------------------
          * return the index of the available server idle longest
          * -----------------------------------------------------
@@ -629,13 +674,13 @@ public class TransientController {
 		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
         int s;
 
-        int i = 30; //i server delle Stagioni iniziano dall'indice 30 in events
+        int i = INDEX_FIRST_SERVER_STAGIONI; //i server delle Stagioni iniziano dall'indice 30 in events
 
         while (event[i].x == 1) 
             i++;                       
         s = i;
         //System.out.println("Un servente candidato è il servente " + s);
-        while (i < 31) { //i < 31, perché i server delle Stagioni sono da 30 a 31 ma si entra già facendo i++ quindi deve essere minore stretto di 31  
+        while (i < INDEX_LAST_SERVER_STAGIONI) { //i < 33, perché i server delle Stagioni sono da 30 a 33 ma si entra già facendo i++ quindi deve essere minore stretto di 33  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -643,7 +688,7 @@ public class TransientController {
         return (s);
     }
 	
-	private int findClubServer(MsqEvent[] event) {
+	int findClubServer(MsqEvent[] event) {
         /* -----------------------------------------------------
          * return the index of the available server idle longest
          * -----------------------------------------------------
@@ -651,13 +696,13 @@ public class TransientController {
 		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
         int s;
 
-        int i = 34; //i server infopoint iniziano dall'indice 13 in events
+        int i = INDEX_FIRST_SERVER_CLUB; //i server infopoint iniziano dall'indice 36 in events
 
         while (event[i].x == 1) 
             i++;                       
         s = i;
         //System.out.println("Un servente candidato è il servente " + s);
-        while (i < 38) { //i < 38, perché i server di Club sono da 34 a 38 ma si entra già facendo i++ quindi deve essere minore stretto di 14  
+        while (i < INDEX_LAST_SERVER_CLUB) { //i < 38, perché i server di Club sono da 34 a 38 ma si entra già facendo i++ quindi deve essere minore stretto di 14  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -665,18 +710,33 @@ public class TransientController {
         return (s);
     }
 	
-				
-	private double getService(Rngs r, int streamIndex, double meanServiceTime) {
+	private double getServiceLogin(Rngs r, int streamIndex, double meanServiceTime, Rvms rvms) {
         r.selectStream(streamIndex);
-        return (exponential(meanServiceTime, r));
+	    return (NormalTruncated(meanServiceTime, DEV_ST_LOGIN, LOWER_B_LOGIN, UPPER_B_LOGIN, r, rvms));
+		
     }
 	
-	private double NormalTruncated(double m, double s, double a, double b, Rngs r, Rvms rvms) throws Exception {
+	private double getServiceUT(Rngs r, int streamIndex, double meanServiceTime, Rvms rvms) {
+        r.selectStream(streamIndex);
+        return (NormalTruncated(meanServiceTime, DEV_ST_UT, LOWER_B_UT, UPPER_B_UT, r, rvms));
+    }
+	
+	private double getServiceStagioni(Rngs r, int streamIndex, double meanServiceTime, Rvms rvms) {
+        r.selectStream(streamIndex);
+        return (NormalTruncated(meanServiceTime, DEV_ST_STA, LOWER_B_STA, UPPER_B_STA, r, rvms));
+    }
+	
+	private double getServiceClub(Rngs r, int streamIndex, double meanServiceTime, Rvms rvms) {
+        r.selectStream(streamIndex);
+        return (NormalTruncated(meanServiceTime, DEV_ST_CLUB, LOWER_B_CLUB, UPPER_B_CLUB, r, rvms));
+    }
+	
+	private double NormalTruncated(double m, double s, double a, double b, Rngs r, Rvms rvms) {
         // Genera un numero casuale dalla distribuzione normale standard
         // m indica la media e s la deviazione standard
 
         if (a >= b) {
-            throw new Exception("Il valore di a deve essere minore di b");
+            System.out.println("Il valore di a deve essere minore di b");
         }
 
         double u;
@@ -700,10 +760,10 @@ public class TransientController {
         return (-mean * Math.log(1.0 - r.random()));
     }
 	
-	//funzione per generare il prossimo arrivo in base allo slot orario
+	//funzione per generare il prossimo arrivo
 	private double getArrival(Rngs r, int streamIndex, double currentTime) {
 		r.selectStream(1 + streamIndex);
-        sarrival+= exponential(1/24.0, r);
+        sarrival+= exponential(1/LAMBDA, r);
 
         return (sarrival);
     }
