@@ -15,15 +15,11 @@ public abstract class Node {
 	protected double serviceTime;
 	protected double currentStartTimeBatch;
 	protected double lastCompletionTime;
-	protected int indexFirstServer;
-	protected int indexLastServer;
 	protected double currentFirstArrivalTime;
 	
-	protected Node(int streamIndex, double serviceTime, int indexFirstServer, int indexLastServer) {
+	protected Node(int streamIndex, double serviceTime) {
 		this.streamIndex = streamIndex;
 		this.serviceTime = serviceTime;
-		this.indexFirstServer = indexFirstServer;
-		this.indexLastServer = indexLastServer;
 		this.currentStartTimeBatch = 0.0;
 		this.currentFirstArrivalTime = 0.0;
 		
@@ -98,12 +94,6 @@ public abstract class Node {
 	}
 	public void setLastCompletionTime(double lastCompletionTime) {
 		this.lastCompletionTime = lastCompletionTime;
-	}
-	public int getIndexFirstServer() {
-		return indexFirstServer;
-	}
-	public int getIndexLastServer() {
-		return indexLastServer;
 	}
 	public double getCurrentFirstArrivalTime() {
 		return currentFirstArrivalTime;
