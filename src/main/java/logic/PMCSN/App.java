@@ -3,23 +3,24 @@ package logic.PMCSN;
 import java.io.IOException;
 import java.util.Scanner;
 
-
+import logic.PMCSN.controller.ExperimentsController;
 import logic.PMCSN.controller.FiniteHorizonController;
 import logic.PMCSN.controller.InfiniteHorizonController;
 import logic.PMCSN.controller.TransientController;
+import logic.PMCSN.controller.ValidationController;
 import logic.PMCSN.controller.VerificaController;
 import logic.PMCSN.utils.Autocorrelation;
 
 public class App {
 	
     public static void main( String[] args ) {
-        Scanner input = new Scanner(System.in);
+        /*Scanner input = new Scanner(System.in);
         System.out.println("Benvenuto nel simulatore PMCSN!");
         System.out.println("Puoi scegliere tra le seguenti opzioni: ");
         System.out.println("1 - Verifica");
-        System.out.println("2 - Analisi transiente");
-        System.out.println("3 - Simulazione ad orizzonte infinito");
-        System.out.println("4 - Simulazione ad orizzonte finito");
+        System.out.println("2 - Validazione");        
+        System.out.println("3 - Analisi transiente");
+        System.out.println("4 - Esperimenti");
         
         System.out.println("Digita un numero: ");
         String choice = input.nextLine();
@@ -32,30 +33,32 @@ public class App {
         	break;
         
         case "2":
+        	System.out.println("Hai scelto la validazione");
+        	ValidationController valc = new ValidationController();
+        	valc.startAnalysis();
+        	break;
+        
+        case "3":
         	System.out.println("Hai scelto l'analisi transiente");
         	TransientController tc = new TransientController();
         	tc.startAnalysis();
         	break;
-        	
-        case "3":
-        	System.out.println("Hai scelto la simulazione ad orizzonte infinito");
-        	InfiniteHorizonController ihc = new InfiniteHorizonController();
-        	//ihc.startAnalysis();
-        	break;
         
         case "4":
-        	System.out.println("Hai scelto la simulazione ad orizzonte finito");
-        	FiniteHorizonController fhc = new FiniteHorizonController();
-        	//fhc.startAnalysis();
+        	System.out.println("Hai scelto gli esperimenti");
+        	ExperimentsController exc = new ExperimentsController();
+        	exc.startAnalysis();
         	break;
         	
         default:
         	System.out.println("Non hai scelto nulla, chiusura del programma");
         	System.exit(0);
-        }
-        /*VerificaController vc = new VerificaController();
+        }*/
+        /*TransientController tc = new TransientController();
+    	tc.startAnalysis();*/
+        VerificaController vc = new VerificaController();
     	vc.startAnalysis();
-    	Autocorrelation a = new Autocorrelation();
+    	/*Autocorrelation a = new Autocorrelation();
     	try {
 			a.startCalculate();
 		} catch (IOException e) {

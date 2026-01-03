@@ -38,13 +38,13 @@ import static logic.PMCSN.model.Events.*;
  * 
  * STAGIONI
  * 29 arrivo
- * 30-31 servizio
- * 32 abbandono
+ * 30-31-32-33 servizio
+ * 34 abbandono
  * 
  * CLUB
- * 33 arrivo
- * 34-35-36-37-38 servizio
- * 39 abbandono
+ * 35 arrivo
+ * 36-37-38-39-40 servizio
+ * 41 abbandono
  * 
  * 
  */
@@ -63,15 +63,10 @@ public class VerificaController {
 	
 	public void startAnalysis() {
 		
-		int batchsize = 400;
-		int numBatches = 64;
+		//624, 128, 20 va quasi perfetto
+		int batchsize = 624;
+		int numBatches = 128;
 		
-		/*int batchsize = 1024;
-		int numBatches = 50;
-		
-	    //parametri per la simulazione batch
-		/*int batchsize = 60;
-		int numBatches = 5;*/
 		int intervalLength = 480;
 		
 		//primo istante del nuovo batch ed ogni primo arrivo
@@ -202,9 +197,8 @@ public class VerificaController {
         
         int iter = 0;
         
-        int centers = 4;
-        int[] batchCounter = new int[centers];
-        for (int i = 0; i < centers; i++) {
+        int[] batchCounter = new int[NUMBER_OF_CENTERS];
+        for (int i = 0; i < NUMBER_OF_CENTERS; i++) {
         	batchCounter[i] = 0;
         }
         
@@ -216,16 +210,16 @@ public class VerificaController {
         	
         	if (totalLoginCheck != 0 && totalLoginCheck % batchsize == 0) {
     			batchCounter[0]++;
-    			statsBatch(loginNode, nodeAreaLogin, t.current, totalLoginCheck, 1, 12, sum, events[0].t);
+    			statsBatch(loginNode, nodeAreaLogin, t.current, totalLoginCheck, INDEX_FIRST_SERVER_LOGIN, INDEX_LAST_SERVER_LOGIN, sum, events[INDEX_ARRIVAL_LOGIN].t);
     			nodeAreaLogin = 0.0;
-    			for (int i = 1; i <= 12; i++) {
+    			for (int i = INDEX_FIRST_SERVER_LOGIN; i <= INDEX_LAST_SERVER_LOGIN; i++) {
     		        sum[i].service = 0;
     		        sum[i].served = 0;
     		    }
     			totalLoginCheck = 0;
     			dropoutsLogin = 0;
     			
-    			currentFirstArrivalTimeLogin = events[0].t;
+    			currentFirstArrivalTimeLogin = events[INDEX_ARRIVAL_LOGIN].t;
     			loginNode.setCurrentFirstArrivalTime(currentFirstArrivalTimeLogin);
     			
     			currentBatchStartTime = t.current;
@@ -235,16 +229,16 @@ public class VerificaController {
             if (totalUltimateTeamCheck != 0 && totalUltimateTeamCheck % batchsize == 0) {
     			
     			batchCounter[1]++;
-    			statsBatch(UTnode, nodeAreaUltimateTeam, t.current, totalUltimateTeamCheck, 15, 27, sum, events[14].t);
+    			statsBatch(UTnode, nodeAreaUltimateTeam, t.current, totalUltimateTeamCheck, INDEX_FIRST_SERVER_ULTIMATE_TEAM, INDEX_LAST_SERVER_ULTIMATE_TEAM, sum, events[INDEX_ARRIVAL_ULTIMATE_TEAM].t);
     			nodeAreaUltimateTeam = 0.0;
-    			for (int i = 15; i <= 27; i++) {
+    			for (int i = INDEX_FIRST_SERVER_ULTIMATE_TEAM; i <= INDEX_LAST_SERVER_ULTIMATE_TEAM; i++) {
     		        sum[i].service = 0;
     		        sum[i].served = 0;
     		    }
     			totalUltimateTeamCheck = 0;
     			dropoutsUltimateTeam = 0;
     			
-    			currentFirstArrivalTimeUT = events[14].t;
+    			currentFirstArrivalTimeUT = events[INDEX_ARRIVAL_ULTIMATE_TEAM].t;
     			UTnode.setCurrentFirstArrivalTime(currentFirstArrivalTimeUT);
     			
     			currentBatchStartTime = t.current;
@@ -253,16 +247,16 @@ public class VerificaController {
             //System.out.println("Job serviti nel batch Stagioni: " + totalStagioniCheck);
             if (totalStagioniCheck != 0 && totalStagioniCheck % batchsize == 0) {
     			batchCounter[2]++;
-    			statsBatch(StagioniNode, nodeAreaStagioni, t.current, totalStagioniCheck, 30 , 31, sum, events[29].t);
+    			statsBatch(StagioniNode, nodeAreaStagioni, t.current, totalStagioniCheck, INDEX_FIRST_SERVER_STAGIONI, INDEX_LAST_SERVER_STAGIONI, sum, events[INDEX_ARRIVAL_STAGIONI].t);
     			nodeAreaStagioni = 0.0;
-    			for (int i = 30; i <= 31; i++) {
+    			for (int i = INDEX_FIRST_SERVER_STAGIONI; i <= INDEX_LAST_SERVER_STAGIONI; i++) {
     		        sum[i].service = 0;
     		        sum[i].served = 0;
     		    }
     			totalStagioniCheck = 0;
     			dropoutsStagioni = 0;
     			
-    			currentFirstArrivalTimeStagioni = events[29].t;
+    			currentFirstArrivalTimeStagioni = events[INDEX_ARRIVAL_STAGIONI].t;
     			StagioniNode.setCurrentFirstArrivalTime(currentFirstArrivalTimeStagioni);
     			
     			currentBatchStartTime = t.current;
@@ -271,16 +265,16 @@ public class VerificaController {
             //System.out.println("Job serviti nel batch Club: " + totalClubCheck);
             if (totalClubCheck != 0 && totalClubCheck % batchsize == 0) {
     			batchCounter[3]++;
-    			statsBatch(clubNode, nodeAreaClub, t.current, totalClubCheck, 34, 38, sum, events[33].t);
+    			statsBatch(clubNode, nodeAreaClub, t.current, totalClubCheck, INDEX_FIRST_SERVER_CLUB, INDEX_LAST_SERVER_CLUB, sum, events[INDEX_ARRIVAL_CLUB].t);
     			nodeAreaClub = 0.0;
-    			for (int i = 34; i <= 38; i++) {
+    			for (int i = INDEX_FIRST_SERVER_CLUB; i <= INDEX_LAST_SERVER_CLUB; i++) {
     		        sum[i].service = 0;
     		        sum[i].served = 0;
     		    }
     			totalClubCheck = 0;
     			dropoutsClub = 0;
     			
-    			currentFirstArrivalTimeClub = events[33].t;
+    			currentFirstArrivalTimeClub = events[INDEX_ARRIVAL_CLUB].t;
     			clubNode.setCurrentFirstArrivalTime(currentFirstArrivalTimeClub);
     			
     			currentBatchStartTime = t.current;
@@ -289,7 +283,7 @@ public class VerificaController {
         	
         	//System.out.println("---Aggiornamento batch completati:");
         	int checkBatchCounter = 1;
-        	for (int i = 0; i < centers; i++) {
+        	for (int i = 0; i < NUMBER_OF_CENTERS; i++) {
         		System.out.println("Counter " + i + ": " + batchCounter[i]);
         		if (batchCounter[i] < numBatches) {
         			checkBatchCounter = 0;
@@ -335,9 +329,9 @@ public class VerificaController {
         	       	
             if(!dropoutsLoginQueue.isEmpty()) {
         		//System.out.println("La lista di abbandoni del Login non è vuota");
-        		events[13].t = dropoutsLoginQueue.get(0);
+        		events[INDEX_DROPOUT_LOGIN].t = dropoutsLoginQueue.get(0);
         		//System.out.println("L'evento di abbandono del Login avverrà all'istante " + events[13].t);
-        		events[13].x = 1; //attivo l'evento di abbandono
+        		events[INDEX_DROPOUT_LOGIN].x = 1; //attivo l'evento di abbandono
         		
         		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DEL LOGIN: ");
                 for (int i = 0; i < events.length; i++) {
@@ -348,14 +342,14 @@ public class VerificaController {
         	}
         	else {
         		//System.out.println("La lista di abbandoni del Login è vuota, l'evento viene disattivato");
-        		events[13].x = 0; //disattivo l'evento di abbandono
+        		events[INDEX_DROPOUT_LOGIN].x = 0; //disattivo l'evento di abbandono
         	}
         	
         	if(!dropoutsUltimateTeamQueue.isEmpty()) {
         		//System.out.println("La lista di abbandoni della coda di Ultimate Team non è vuota");
-        		events[28].t = dropoutsUltimateTeamQueue.get(0);
+        		events[INDEX_DROPOUT_ULTIMATE_TEAM].t = dropoutsUltimateTeamQueue.get(0);
         		//System.out.println("L'evento di abbandono della coda di Ultimate Team avverrà all'istante " + events[28].t);
-        		events[28].x = 1; //attivo l'evento di abbandono
+        		events[INDEX_DROPOUT_ULTIMATE_TEAM].x = 1; //attivo l'evento di abbandono
         		
         		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO Di ULTIMATE TEAM: ");
                 for (int i = 0; i < events.length; i++) {
@@ -366,14 +360,14 @@ public class VerificaController {
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda di Ultimate Team è vuota, l'evento viene disattivato");
-        		events[28].x = 0; //disattivo l'evento di abbandono
+        		events[INDEX_DROPOUT_ULTIMATE_TEAM].x = 0; //disattivo l'evento di abbandono
         	}
         	
         	if(!dropoutsStagioniQueue.isEmpty()) {
         		//System.out.println("La lista di abbandoni della coda delle Stagioni non è vuota");
-        		events[32].t = dropoutsStagioniQueue.get(0);
+        		events[INDEX_DROPOUT_STAGIONI].t = dropoutsStagioniQueue.get(0);
         		//System.out.println("L'evento di abbandono avverrà della coda delle Stagioni all'istante " + events[32].t);
-        		events[32].x = 1; //attivo l'evento di abbandono
+        		events[INDEX_DROPOUT_STAGIONI].x = 1; //attivo l'evento di abbandono
         		
         		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DELLE STAGIONI: ");
                 for (int i = 0; i < events.length; i++) {
@@ -384,14 +378,14 @@ public class VerificaController {
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda delle Stagioni è vuota, l'evento viene disattivato");
-        		events[32].x = 0; //disattivo l'evento di abbandono
+        		events[INDEX_DROPOUT_STAGIONI].x = 0; //disattivo l'evento di abbandono
         	}
         	
         	if(!dropoutsClubQueue.isEmpty()) {
         		//System.out.println("La lista di abbandoni della coda di Club non è vuota");
-        		events[39].t = dropoutsClubQueue.get(0);
+        		events[INDEX_DROPOUT_CLUB].t = dropoutsClubQueue.get(0);
         		//System.out.println("L'evento di abbandono avverrà all'istante " + events[39].t);
-        		events[39].x = 1; //attivo l'evento di abbandono
+        		events[INDEX_DROPOUT_CLUB].x = 1; //attivo l'evento di abbandono
         		
         		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DI CLUB: ");
                 for (int i = 0; i < events.length; i++) {
@@ -402,7 +396,7 @@ public class VerificaController {
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda di Club è vuota, l'evento viene disattivato");
-        		events[39].x = 0; //disattivo l'evento di abbandono
+        		events[INDEX_DROPOUT_CLUB].x = 0; //disattivo l'evento di abbandono
         	}
         	
         	
@@ -435,14 +429,14 @@ public class VerificaController {
         		//updateObservations();
             	events[ALL_EVENTS].t += intervalLength;
             	//System.out.println("Prossimo evento di SAVE_STAT: " + events[ALL_EVENTS].t);
-            } else if (e == 0) { //e == 0
+            } else if (e == INDEX_ARRIVAL_LOGIN) { //e == 0
             	System.out.println("\n---------L'EVENTO è UN NUOVO ARRIVO NEL LOGIN-------------");
             	totalJobsInLogin++;
             	/*System.out.println("Job nel nodo Login: " + totalJobsInLogin);
             	System.out.println("Numero di serventi della coda Login: " + SERVERS_LOGIN);
             	
             	System.out.println("------(Intanto pianifico il nuovo evento di arrivo, che sarà alla coda Login)");*/
-            	events[0].t = getArrival(rng, loginNode.getStreamIndex(), t.current);
+            	events[INDEX_ARRIVAL_LOGIN].t = getArrival(rng, loginNode.getStreamIndex(), t.current);
             	//System.out.println("--------(Sarà un arrivo in coda Login, all'istante: " + events[0].t + ")");
             	            	
             	if (totalJobsInLogin <= SERVERS_LOGIN) {
@@ -458,7 +452,7 @@ public class VerificaController {
                     events[s].x = 1;
             	}
             
-            } else if (e == 14) { //e == 14, cioè l'arrivo ad Ultimate Team
+            } else if (e == INDEX_ARRIVAL_ULTIMATE_TEAM) { //e == 14, cioè l'arrivo ad Ultimate Team
             	
             	events[e].x = 0;//disattivazione dell'evento di arrivo
             	
@@ -479,7 +473,7 @@ public class VerificaController {
                     events[s].x = 1;
             	}	
             
-            } else if (e == 29) { // e == 29 arrivo alla coda Stagioni
+            } else if (e == INDEX_ARRIVAL_STAGIONI) { // e == 29 arrivo alla coda Stagioni
             	
             	events[e].x = 0;//disattivazione dell'evento di arrivo
             	
@@ -500,7 +494,7 @@ public class VerificaController {
                     events[s].x = 1;
             	}
             	
-            } else if (e == 33) { //e == 33 arrivo alla coda Club
+            } else if (e == INDEX_ARRIVAL_CLUB) { //e == 35 arrivo alla coda Club
             	
             	events[e].x = 0;//disattivazione dell'evento di arrivo
             	
@@ -512,7 +506,7 @@ public class VerificaController {
             	if (totalJobsInClub <= SERVERS_CLUB) { //verifico se posso essere servito subito
             		service = getService(rng, clubNode.getStreamIndex(), clubNode.getServiceTime());
             		//System.out.println("Si cerca un server libero tra i " + SERVERS_CLUB);
-            		s = findProClubServer(events);
+            		s = findClubServer(events);
             		//System.out.println("Abbiamo trovato il server numero " + s);
             		sum[s].service += service;
                     sum[s].served++;
@@ -523,40 +517,48 @@ public class VerificaController {
                     events[s].x = 1;
             	}
             	
-            } else if ((e >= 1) && (e <= 12)) { //eventi dei server di Login
+            } else if ((e >= INDEX_FIRST_SERVER_LOGIN) && (e <= INDEX_LAST_SERVER_LOGIN)) { //eventi dei server di Login, 1 e 12
             	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AL LOGIN------------------");
             	
             	if (firstCompletionLogin == 0) { //salviamo il primo completamento per le statistiche 
             		firstCompletionLogin = t.current; 
             	}
-            	
-            	boolean abandon = generateAbandon(rng, loginNode.getStreamIndex(), not_P1);//qua si decide se l'utente abbandona oppure supera i controlli
-            	if (abandon) { //se l'utente non supera i controlli
+            	boolean abandon = false;
+            	//int percorsi = generateDestination(rng, loginNode.getStreamIndex());
+            	//boolean abandon = generateAbandon(rng, loginNode.getStreamIndex(), not_P1);//qua si decide se l'utente abbandona oppure supera i controlli
+            	if (abandon == true) { //se l'utente non supera i controlli
             		//System.out.println("L'utente non ha superato i controlli del Login");
             		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
             		//System.out.println("Prossimo evento di abbandono: " + abandonTime);
             		dropoutsLoginQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni	
             	}
             	else {
+            		int percorsi = generateDestination(rng, loginNode.getStreamIndex());
             		totalJobsInLogin--;//diminuisco di 1 il numero di utenti in questo centro
             		totalLoginCheck++;//aumento il numero di utenti serviti in questo centro
                 	/*System.out.println("Utenti serviti nel Login: " + totalLoginCheck);
                 	System.out.println("Utenti ancora nel Login: " + totalJobsInLogin);*/
                 	
-                	int percorsi = generateDestination(rng, loginNode.getStreamIndex());
+                	//int percorsi = generateDestination(rng, loginNode.getStreamIndex());
+            		if (percorsi == -1) { //se l'utente non supera i controlli
+                		//System.out.println("L'utente non ha superato i controlli del Login");
+                		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
+                		//System.out.println("Prossimo evento di abbandono: " + abandonTime);
+                		dropoutsLoginQueue.add(abandonTime); //si aggiunge l'abbandono alla lista di abbandoni	
+                	}
                 	               	
-                	if (percorsi == 0) {
+            		else if (percorsi == 0) {
                 		//System.out.println("L'utente andrà in coda Ultimate Team");            		
-                	    events[14].t = t.current; //aggiunto un evento alla coda Ultimate Team
-                		events[14].x = 1; //attivazione dell'evento
+                	    events[INDEX_ARRIVAL_ULTIMATE_TEAM].t = t.current; //aggiunto un evento alla coda Ultimate Team, cioè l'evento 14
+                		events[INDEX_ARRIVAL_ULTIMATE_TEAM].x = 1; //attivazione dell'evento 14
                 	} else if (percorsi == 1) {
                 		//System.out.println("L'utente andrà in coda Club");            		
-                	    events[33].t = t.current; //aggiunto un evento alla coda Club
-                		events[33].x = 1; //attivazione dell'evento	
+                	    events[INDEX_ARRIVAL_CLUB].t = t.current; //aggiunto un evento alla coda Club, cioè l'evento 35
+                		events[INDEX_ARRIVAL_CLUB].x = 1; //attivazione dell'evento 35
                 	} else if (percorsi == 2) {
                 		//System.out.println("L'utente andrà in coda Stagioni");
-                		events[29].t = t.current; //aggiunto un evento alla coda Stagioni
-                		events[29].x = 1;//attivazione dell'evento
+                		events[INDEX_ARRIVAL_STAGIONI].t = t.current; //aggiunto un evento alla coda Stagioni, cioè l'evento 29
+                		events[INDEX_ARRIVAL_STAGIONI].x = 1;//attivazione dell'evento 29
                 	}
                 	
                 	s = e;
@@ -573,7 +575,7 @@ public class VerificaController {
                       	events[s].x = 0; //il server diventa libero	
                 	}
             	}
-        	} else if ((e >= 15) && (e <= 27)) { //eventi dei server di Ultimate Team
+        	} else if ((e >= INDEX_FIRST_SERVER_ULTIMATE_TEAM) && (e <= INDEX_LAST_SERVER_ULTIMATE_TEAM)) { //eventi dei server di Ultimate Team, 15 E 27
         		//System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER AD ULTIMATE TEAM------------------");
             	if (firstCompletionUltimateTeam == 0) { //salviamo il primo completamento per le statistiche 
             		firstCompletionUltimateTeam = t.current; 
@@ -606,7 +608,7 @@ public class VerificaController {
                 	}
             	}
             	
-            } else if ((e >= 30) && (e <= 31)) { //eventi dei server di Stagioni
+            } else if ((e >= INDEX_FIRST_SERVER_STAGIONI) && (e <= INDEX_LAST_SERVER_STAGIONI)) { //eventi dei server di Stagioni, 30 e 33
             	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER DI STAGIONI------------------");
             	if (firstCompletionStagioni == 0) { //salviamo il primo completamento per le statistiche 
             		firstCompletionStagioni = t.current; 
@@ -640,7 +642,7 @@ public class VerificaController {
                 	}
             	}
             	
-            } else if ((e >= 34) && (e <= 38)) { //eventi dei server di Pro Club
+            } else if ((e >= INDEX_FIRST_SERVER_CLUB) && (e <= INDEX_LAST_SERVER_CLUB)) { //eventi dei server di Club, 36 e 40
             	System.out.println("\n------L'EVENTO è IL COMPLETAMENTO DI UN SERVER DI CLUB------------------");
             	if (firstCompletionClub == 0) { //salviamo il primo completamento per le statistiche 
             		firstCompletionClub = t.current; 
@@ -674,21 +676,21 @@ public class VerificaController {
                 	}
             	}
             	
-            } else if (e == 13) {
+            } else if (e == INDEX_DROPOUT_LOGIN) { //e == 13
             	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA LOGIN------------");
             	dropoutsLogin++;
             	dropoutsLoginQueue.remove(0);	
-            } else if (e == 28) {
+            } else if (e == INDEX_DROPOUT_ULTIMATE_TEAM) { //e == 28
             	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA ULTIMATE TEAM------------");
             	dropoutsUltimateTeam++;
             	dropoutsUltimateTeamQueue.remove(0);
             	
-            } else if (e == 32) {
+            } else if (e == INDEX_DROPOUT_STAGIONI) { //e == 34
             	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA STAGIONI------------");
             	dropoutsStagioni++;
             	dropoutsStagioniQueue.remove(0);
             	
-            } else if (e == 39) {
+            } else if (e == INDEX_DROPOUT_CLUB) { //e == 41
             	System.out.println("\n------L'EVENTO è L'ABBANDONO DELLA CODA CLUB------------");
             	dropoutsClub++;
             	dropoutsClubQueue.remove(0);
@@ -864,7 +866,7 @@ public class VerificaController {
     }
 	
 	private void removeWarmUp(List<Double> list) {
-		int warmUpBatches = 10;
+		int warmUpBatches = 20;
 		list.subList(0, warmUpBatches).clear();
 	}
 	
@@ -955,21 +957,14 @@ public class VerificaController {
 	    rngs.selectStream(3 + streamIndex);
 	    double r = rngs.random();
 	    
-	    /*if (r < 0.65) {
+	    if (r < 0.6) { 
 	        return 0; // Ultimate Team
-	    } else if (r < 0.85) {
+	    } else if (r < 0.8) {
 	        return 1; // Club
-	    } else {
+	    } else if (r < 0.9) {
 	        return 2; // Stagioni
-	    }*/
-
-	    if (r < 0.75) {
-	        return 0; // Ultimate Team
-	    } else if (r < 0.95) {
-	        return 1; // Club
-	    } else {
-	        return 2; // Stagioni
-	    }
+	    } else return -1;//abbandono
+	    
 	}
 	
 		
@@ -981,13 +976,13 @@ public class VerificaController {
 		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
         int s;
 
-        int i = 1; //i server Login iniziano dall'indice 1 in events
+        int i = INDEX_FIRST_SERVER_LOGIN; //i server Login iniziano dall'indice 1 in events
 
         while (event[i].x == 1) 
             i++;                       
         s = i;
         //System.out.println("Un servente candidato è il servente " + s);
-        while (i < 12) { //i < 12, perché i server login sono da 1 a 12 ma si entra già facendo i++ quindi deve essere minore stretto di 12  
+        while (i < INDEX_LAST_SERVER_LOGIN) { //i < 12, perché i server login sono da 1 a 12 ma si entra già facendo i++ quindi deve essere minore stretto di 12  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -1002,12 +997,12 @@ public class VerificaController {
          */
         int s;
 
-        int i = 15; //i server di Ultimate Team iniziano dall'indice 15 in events
+        int i = INDEX_FIRST_SERVER_ULTIMATE_TEAM; //i server di Ultimate Team iniziano dall'indice 15 in events
 
         while (event[i].x == 1)  
             i++;                  
         s = i;
-        while (i < 27) { //i < 27, perché i server di Ultimate Team sono da 15 a 27 
+        while (i < INDEX_LAST_SERVER_ULTIMATE_TEAM) { //i < 27, perché i server di Ultimate Team sono da 15 a 27 
         	i++;                                           
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -1023,13 +1018,13 @@ public class VerificaController {
 		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
         int s;
 
-        int i = 30; //i server delle Stagioni iniziano dall'indice 30 in events
+        int i = INDEX_FIRST_SERVER_STAGIONI; //i server delle Stagioni iniziano dall'indice 30 in events
 
         while (event[i].x == 1) 
             i++;                       
         s = i;
         //System.out.println("Un servente candidato è il servente " + s);
-        while (i < 31) { //i < 31, perché i server delle Stagioni sono da 30 a 31 ma si entra già facendo i++ quindi deve essere minore stretto di 31  
+        while (i < INDEX_LAST_SERVER_STAGIONI) { //i < 33, perché i server delle Stagioni sono da 30 a 33 ma si entra già facendo i++ quindi deve essere minore stretto di 33  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -1037,7 +1032,7 @@ public class VerificaController {
         return (s);
     }
 	
-	int findProClubServer(MsqEvent[] event) {
+	int findClubServer(MsqEvent[] event) {
         /* -----------------------------------------------------
          * return the index of the available server idle longest
          * -----------------------------------------------------
@@ -1045,13 +1040,13 @@ public class VerificaController {
 		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
         int s;
 
-        int i = 34; //i server infopoint iniziano dall'indice 13 in events
+        int i = INDEX_FIRST_SERVER_CLUB; //i server infopoint iniziano dall'indice 36 in events
 
         while (event[i].x == 1) 
             i++;                       
         s = i;
         //System.out.println("Un servente candidato è il servente " + s);
-        while (i < 38) { //i < 38, perché i server di Club sono da 34 a 38 ma si entra già facendo i++ quindi deve essere minore stretto di 14  
+        while (i < INDEX_LAST_SERVER_CLUB) { //i < 38, perché i server di Club sono da 34 a 38 ma si entra già facendo i++ quindi deve essere minore stretto di 14  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
