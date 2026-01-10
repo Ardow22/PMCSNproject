@@ -47,7 +47,7 @@ public class TransientController {
 	
 	static double START = 0.0; //tempo d'inizio della simulazione
     static double sarrival = START; //ultimo tempo in cui è stato generato un arrivo
-    static double STOP = 21600;
+    static double STOP = 172800;
     static int INTERVAL_DATA = 20;
     static double COLUMNS = (STOP/INTERVAL_DATA) + 1;
 	
@@ -60,7 +60,7 @@ public class TransientController {
 		seeds[0] = 123456789;
 		Rngs r = new Rngs();
 		
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 10; i++) {
 			System.out.println("ITERAZIONE: " + i);
 			TransientStats ts = new TransientStats();//va inizializzato dentro al ciclo perché ad ogni nuova run raccolgo nuove statistiche da 0
 			sarrival = START;

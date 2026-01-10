@@ -5,9 +5,7 @@ import java.util.Scanner;
 
 import logic.PMCSN.controller.ExperimentsController;
 import logic.PMCSN.controller.FiniteHorizonController;
-import logic.PMCSN.controller.InfiniteHorizonController;
 import logic.PMCSN.controller.TransientController;
-import logic.PMCSN.controller.ValidationController;
 import logic.PMCSN.controller.VerificaController;
 import logic.PMCSN.utils.Autocorrelation;
 
@@ -17,10 +15,10 @@ public class App {
         /*Scanner input = new Scanner(System.in);
         System.out.println("Benvenuto nel simulatore PMCSN!");
         System.out.println("Puoi scegliere tra le seguenti opzioni: ");
-        System.out.println("1 - Verifica");
-        System.out.println("2 - Validazione");        
-        System.out.println("3 - Analisi transiente");
-        System.out.println("4 - Esperimenti");
+        System.out.println("1 - Verifica");        
+        System.out.println("2 - Analisi transiente");
+        System.out.println("3 - Esperimenti");
+        System.out.println("4 - Orizzonte finito);
         
         System.out.println("Digita un numero: ");
         String choice = input.nextLine();
@@ -33,21 +31,21 @@ public class App {
         	break;
         
         case "2":
-        	System.out.println("Hai scelto la validazione");
-        	ValidationController valc = new ValidationController();
-        	valc.startAnalysis();
-        	break;
-        
-        case "3":
         	System.out.println("Hai scelto l'analisi transiente");
         	TransientController tc = new TransientController();
         	tc.startAnalysis();
         	break;
         
-        case "4":
+        case "3":
         	System.out.println("Hai scelto gli esperimenti");
         	ExperimentsController exc = new ExperimentsController();
         	exc.startAnalysis();
+        	break;
+        
+        case "4":
+        	System.out.println("Hai scelto l'orizzonte finito");
+        	FiniteHorizonController fhc = new FiniteHorizonController();
+        	fhc.startAnalysis();
         	break;
         	
         default:
@@ -56,8 +54,8 @@ public class App {
         }*/
         /*TransientController tc = new TransientController();
     	tc.startAnalysis();*/
-        VerificaController vc = new VerificaController();
-    	vc.startAnalysis();
+        /*VerificaController vc = new VerificaController();
+    	vc.startAnalysis();*/
     	/*Autocorrelation a = new Autocorrelation();
     	try {
 			a.startCalculate();
@@ -65,5 +63,7 @@ public class App {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
+    	ExperimentsController exc = new ExperimentsController();
+    	exc.startAnalysis();
     }
 }

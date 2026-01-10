@@ -23,33 +23,6 @@ import static logic.PMCSN.model.Constants.*;
 import static logic.PMCSN.model.Events.*;
 
 
-/* TIPOLOGIE DI EVENTO IN BASE ALL'INDICE NELL'ARRAY EVENTS
-/* 
- *
- * LOGIN
- * 0 arrivo
- * 1-2-3-4-5-6-7-8-9-10-11-12 servizio
- * 13 abbandono
- * 
- * ULTIMATE TEAM
- * 14 arrivo
- * 15-16-17-18-19-20-21-22-23-24-25-26-27 servizio
- * 28 abbandono
- * 
- * STAGIONI
- * 29 arrivo
- * 30-31-32-33 servizio
- * 34 abbandono
- * 
- * CLUB
- * 35 arrivo
- * 36-37-38-39-40 servizio
- * 41 abbandono
- * 
- * 
- */
-
-
 
 public class VerificaController {
 	
@@ -63,9 +36,9 @@ public class VerificaController {
 	
 	public void startAnalysis() {
 		
-		//624, 128, 20 va quasi perfetto
-		int batchsize = 624;
-		int numBatches = 128;
+		//1024, 64, 14 va quasi perfetto
+		int batchsize = 1080;
+		int numBatches = 80;
 		
 		int intervalLength = 480;
 		
@@ -120,18 +93,6 @@ public class VerificaController {
 		Rngs rng = new Rngs();
 		long seed = 123456789;
 		rng.plantSeeds(seed);
-		
-        //inizializzazione dei 3 time slot
-		//System.out.println("\n------------INIZIALIZZAZIONE DEI TIME SLOT--------------");
-        /*for (int f = 0; f < 3; f++) {
-            TimeSlot slot = new TimeSlot(PERCENTAGE[f], 12062, 3600 * f, 3600 * (f + 1) - 1);
-            slotList.add(slot);
-        }*/
-        
-        /*System.out.println("Elenco dei time slot: ");
-        for (TimeSlot sl: slotList) {
-        	System.out.println("Slot di indice: " + slotList.indexOf(sl) + " e percentuale: " + sl.getPercentage());
-        }*/
         
         //System.out.println("\n-----------INIZIALIZZAZIONE EVENTI NELLA SIMULAZIONE-------------");
         int sumDebug = ALL_EVENTS_WITH_SAVE_STAT;
@@ -733,104 +694,41 @@ public class VerificaController {
         
         
         //LOGIN
-        boolean checkACFlogin = true;
-        List<Double> acfValuesLogin = new ArrayList<>();
-        acfValuesLogin.add(Math.abs(acf(loginNode.getPopolazioneDellaCodaBatch())));
-        acfValuesLogin.add(Math.abs(acf(loginNode.getPopolazioneDelSistemaBatch())));
-        acfValuesLogin.add(Math.abs(acf(loginNode.getTempiDiServizioBatch())));
-        acfValuesLogin.add(Math.abs(acf(loginNode.getTempiMediDiRispostaBatch())));
-        acfValuesLogin.add(Math.abs(acf(loginNode.getTempiMediInCodaBatch())));
-        acfValuesLogin.add(Math.abs(acf(loginNode.getInterarriviBatch())));
-        acfValuesLogin.add(Math.abs(acf(loginNode.getUtilizzazioneBatch())));
-        for (double a: acfValuesLogin) {
-        	if (a < 0.2) {
-        		checkACFlogin = false;
-        	}
-        }
-        
         writeFile(loginNode.getPopolazioneDellaCodaBatch(), "batch_reports", "popolazione_coda_login");
         writeFile(loginNode.getPopolazioneDelSistemaBatch(), "batch_reports","popolazione_sistema_login");
         writeFile(loginNode.getTempiDiServizioBatch(), "batch_reports", "tempiDiservizio_login");
         writeFile(loginNode.getTempiMediDiRispostaBatch(), "batch_reports","tempiDiRisposta_login");
         writeFile(loginNode.getTempiMediInCodaBatch(), "batch_reports", "tempi_in_coda_login");
-        writeFile(loginNode.getInterarriviBatch(),"batch_reports", "interarrivi_login");
+        //writeFile(loginNode.getInterarriviBatch(),"batch_reports", "interarrivi_login");
         writeFile(loginNode.getUtilizzazioneBatch(),"batch_reports", "utilizzazione_login");
         
         //ULTIMATE TEAM
-        boolean checkACFut = true;
-        List<Double> acfValuesUT = new ArrayList<>();
-        acfValuesUT.add(Math.abs(acf(UTnode.getPopolazioneDellaCodaBatch())));
-        acfValuesUT.add(Math.abs(acf(UTnode.getPopolazioneDelSistemaBatch())));
-        acfValuesUT.add(Math.abs(acf(UTnode.getTempiDiServizioBatch())));
-        acfValuesUT.add(Math.abs(acf(UTnode.getTempiMediDiRispostaBatch())));
-        acfValuesUT.add(Math.abs(acf(UTnode.getTempiMediInCodaBatch())));
-        acfValuesUT.add(Math.abs(acf(UTnode.getInterarriviBatch())));
-        acfValuesUT.add(Math.abs(acf(UTnode.getUtilizzazioneBatch())));
-        for (double a: acfValuesUT) {
-        	if (a < 0.2) {
-        		checkACFut = false;
-        	}
-        }
-        
-        writeFile(UTnode.getPopolazioneDellaCodaBatch(), "batch_reports", "popolazione_coda_UT");
-        writeFile(UTnode.getPopolazioneDelSistemaBatch(), "batch_reports","popolazione_sistema_UT");
-        writeFile(UTnode.getTempiDiServizioBatch(), "batch_reports", "tempiDiservizio_UT");
-        writeFile(UTnode.getTempiMediDiRispostaBatch(), "batch_reports","tempiDiRisposta_UT");
-        writeFile(UTnode.getTempiMediInCodaBatch(), "batch_reports", "tempi_in_coda_UT");
-        writeFile(UTnode.getInterarriviBatch(),"batch_reports", "interarrivi_UT");
-        writeFile(UTnode.getUtilizzazioneBatch(),"batch_reports", "utilizzazione_UT");
+        writeFile(UTnode.getPopolazioneDellaCodaBatch(), "batch_reports", "popolazione_coda_UltimateTeam");
+        writeFile(UTnode.getPopolazioneDelSistemaBatch(), "batch_reports","popolazione_sistema_UltimateTeam");
+        writeFile(UTnode.getTempiDiServizioBatch(), "batch_reports", "tempiDiservizio_UltimateTeam");
+        writeFile(UTnode.getTempiMediDiRispostaBatch(), "batch_reports","tempiDiRisposta_UltimateTeam");
+        writeFile(UTnode.getTempiMediInCodaBatch(), "batch_reports", "tempi_in_coda_UltimateTeam");
+        //writeFile(UTnode.getInterarriviBatch(),"batch_reports", "interarrivi_UT");
+        writeFile(UTnode.getUtilizzazioneBatch(),"batch_reports", "utilizzazione_UltimateTeam");
         
         //STAGIONI
-        boolean checkACFstagioni = true;
-        List<Double> acfValuesStagioni = new ArrayList<>();
-        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getPopolazioneDellaCodaBatch())));
-        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getPopolazioneDelSistemaBatch())));
-        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getTempiDiServizioBatch())));
-        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getTempiMediDiRispostaBatch())));
-        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getTempiMediInCodaBatch())));
-        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getInterarriviBatch())));
-        acfValuesStagioni.add(Math.abs(acf(StagioniNode.getUtilizzazioneBatch())));
-        for (double a: acfValuesStagioni) {
-        	if (a < 0.2) {
-        		checkACFstagioni = false;
-        	}
-        }
-        
         writeFile(StagioniNode.getPopolazioneDellaCodaBatch(), "batch_reports", "popolazione_coda_Stagioni");
         writeFile(StagioniNode.getPopolazioneDelSistemaBatch(), "batch_reports","popolazione_sistema_Stagioni");
         writeFile(StagioniNode.getTempiDiServizioBatch(), "batch_reports", "tempiDiservizio_Stagioni");
         writeFile(StagioniNode.getTempiMediDiRispostaBatch(), "batch_reports","tempiDiRisposta_Stagioni");
         writeFile(StagioniNode.getTempiMediInCodaBatch(), "batch_reports", "tempi_in_coda_Stagioni");
-        writeFile(StagioniNode.getInterarriviBatch(),"batch_reports", "interarrivi_Stagioni");
+        //writeFile(StagioniNode.getInterarriviBatch(),"batch_reports", "interarrivi_Stagioni");
         writeFile(StagioniNode.getUtilizzazioneBatch(),"batch_reports", "utilizzazione_Stagioni");
         
         //CLUB
-        boolean checkACFclub = true;
-        List<Double> acfValuesClub = new ArrayList<>();
-        acfValuesClub.add(Math.abs(acf(clubNode.getPopolazioneDellaCodaBatch())));
-        acfValuesClub.add(Math.abs(acf(clubNode.getPopolazioneDelSistemaBatch())));
-        acfValuesClub.add(Math.abs(acf(clubNode.getTempiDiServizioBatch())));
-        acfValuesClub.add(Math.abs(acf(clubNode.getTempiMediDiRispostaBatch())));
-        acfValuesClub.add(Math.abs(acf(clubNode.getTempiMediInCodaBatch())));
-        acfValuesClub.add(Math.abs(acf(clubNode.getInterarriviBatch())));
-        acfValuesClub.add(Math.abs(acf(clubNode.getUtilizzazioneBatch())));
-        for (double a: acfValuesClub) {
-        	if (a < 0.2) {
-        		checkACFclub = false;
-        	}
-        }
-        
         writeFile(clubNode.getPopolazioneDellaCodaBatch(), "batch_reports", "popolazione_coda_Club");
         writeFile(clubNode.getPopolazioneDelSistemaBatch(), "batch_reports","popolazione_sistema_Club");
         writeFile(clubNode.getTempiDiServizioBatch(), "batch_reports", "tempiDiservizio_Club");
         writeFile(clubNode.getTempiMediDiRispostaBatch(), "batch_reports","tempiDiRisposta_Club");
         writeFile(clubNode.getTempiMediInCodaBatch(), "batch_reports", "tempi_in_coda_Club");
-        writeFile(clubNode.getInterarriviBatch(),"batch_reports", "interarrivi_Club");
+        //writeFile(clubNode.getInterarriviBatch(),"batch_reports", "interarrivi_Club");
         writeFile(clubNode.getUtilizzazioneBatch(),"batch_reports", "utilizzazione_Club");
         
-        if (!checkACFlogin && !checkACFut && !checkACFstagioni && !checkACFclub) {
-            System.out.println("❌ ERRORE, DEVI AUMENTARE batchsize!");
-        }
         Estimate estimate = new Estimate();
 
         List<String> filenames = Arrays.asList(
@@ -839,23 +737,20 @@ public class VerificaController {
                 "tempiDiservizio_login",
                 "tempiDiRisposta_login",
                 "tempi_in_coda_login",
-                "interarrivi_login",
                 "utilizzazione_login", 
-        		"popolazione_coda_UT","popolazione_sistema_UT", "tempiDiservizio_UT","tempiDiRisposta_UT",
-                "tempi_in_coda_UT","interarrivi_UT","utilizzazione_UT", 
+        		"popolazione_coda_UltimateTeam","popolazione_sistema_UltimateTeam", "tempiDiservizio_UltimateTeam","tempiDiRisposta_UltimateTeam",
+                "tempi_in_coda_UltimateTeam","utilizzazione_UltimateTeam", 
                 "popolazione_coda_Stagioni",
                 "popolazione_sistema_Stagioni",
                 "tempiDiservizio_Stagioni",
                 "tempiDiRisposta_Stagioni",
                 "tempi_in_coda_Stagioni",
-                "interarrivi_Stagioni",
                 "utilizzazione_Stagioni",
                 "popolazione_coda_Club",
                 "popolazione_sistema_Club",
                 "tempiDiservizio_Club",
                 "tempiDiRisposta_Club",
                 "tempi_in_coda_Club",
-                "interarrivi_Club",
                 "utilizzazione_Club"
                 	);
         
@@ -865,6 +760,7 @@ public class VerificaController {
         
     }
 	
+	//rimozione dei batch di warmup
 	private void removeWarmUp(List<Double> list) {
 		int warmUpBatches = 20;
 		list.subList(0, warmUpBatches).clear();
@@ -904,9 +800,6 @@ public class VerificaController {
             }
         }
     }
-
-	
-	
 	
 	private void statsBatch(Node node, double nodeArea, double currentTime, double jobsServedPerBatch, int indexFirstServer, int indexLastServer, MsqSum[] sum, double eventTime) {
 		double responseTime = nodeArea/jobsServedPerBatch;
@@ -948,12 +841,12 @@ public class VerificaController {
 		node.getInterarriviBatch().add(interarrivals);
 	}   
 	
-	static boolean generateAbandon(Rngs rngs, int streamIndex, double percentage) {
+	private boolean generateAbandon(Rngs rngs, int streamIndex, double percentage) {
         rngs.selectStream(2 + streamIndex);
         return rngs.random() <= percentage;
     }
 	
-	static int generateDestination(Rngs rngs, int streamIndex) {
+	private int generateDestination(Rngs rngs, int streamIndex) {
 	    rngs.selectStream(3 + streamIndex);
 	    double r = rngs.random();
 	    
@@ -963,7 +856,7 @@ public class VerificaController {
 	        return 1; // Club
 	    } else if (r < 0.9) {
 	        return 2; // Stagioni
-	    } else return -1;//abbandono
+	    } else return -1;//abbandono del sistema
 	    
 	}
 	
@@ -982,7 +875,7 @@ public class VerificaController {
             i++;                       
         s = i;
         //System.out.println("Un servente candidato è il servente " + s);
-        while (i < INDEX_LAST_SERVER_LOGIN) { //i < 12, perché i server login sono da 1 a 12 ma si entra già facendo i++ quindi deve essere minore stretto di 12  
+        while (i < INDEX_LAST_SERVER_LOGIN) {  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -997,12 +890,12 @@ public class VerificaController {
          */
         int s;
 
-        int i = INDEX_FIRST_SERVER_ULTIMATE_TEAM; //i server di Ultimate Team iniziano dall'indice 15 in events
+        int i = INDEX_FIRST_SERVER_ULTIMATE_TEAM; //i server di Ultimate Team iniziano dall'indice INDEX_FIRST_SERVER_ULTIMATE_TEAM in events
 
         while (event[i].x == 1)  
             i++;                  
         s = i;
-        while (i < INDEX_LAST_SERVER_ULTIMATE_TEAM) { //i < 27, perché i server di Ultimate Team sono da 15 a 27 
+        while (i < INDEX_LAST_SERVER_ULTIMATE_TEAM) {
         	i++;                                           
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -1015,16 +908,15 @@ public class VerificaController {
          * return the index of the available server idle longest
          * -----------------------------------------------------
          */
-		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
         int s;
 
-        int i = INDEX_FIRST_SERVER_STAGIONI; //i server delle Stagioni iniziano dall'indice 30 in events
+        int i = INDEX_FIRST_SERVER_STAGIONI; //i server delle Stagioni iniziano dall'indice INDEX_FIRST_SERVER_STAGIONI in events
 
         while (event[i].x == 1) 
             i++;                       
         s = i;
         //System.out.println("Un servente candidato è il servente " + s);
-        while (i < INDEX_LAST_SERVER_STAGIONI) { //i < 33, perché i server delle Stagioni sono da 30 a 33 ma si entra già facendo i++ quindi deve essere minore stretto di 33  
+        while (i < INDEX_LAST_SERVER_STAGIONI) {//i < INDEX_LAST_SERVER_STAGIONI, perché i server di Stagioni sono da INDEX_FIRST_SERVER_STAGIONI a INDEX_LAST_SERVER_STAGIONI ma si entra già facendo i++ quindi deve essere minore stretto di INDEX_LAST_SERVER_STAGIONI  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -1037,16 +929,15 @@ public class VerificaController {
          * return the index of the available server idle longest
          * -----------------------------------------------------
          */
-		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
         int s;
 
-        int i = INDEX_FIRST_SERVER_CLUB; //i server infopoint iniziano dall'indice 36 in events
+        int i = INDEX_FIRST_SERVER_CLUB; //i server Club dall'indice INDEX_FIRST_SERVER_CLUB in events
 
         while (event[i].x == 1) 
             i++;                       
         s = i;
         //System.out.println("Un servente candidato è il servente " + s);
-        while (i < INDEX_LAST_SERVER_CLUB) { //i < 38, perché i server di Club sono da 34 a 38 ma si entra già facendo i++ quindi deve essere minore stretto di 14  
+        while (i < INDEX_LAST_SERVER_CLUB) { //i < INDEX_LAST_SERVER_CLUB, perché i server di Club sono da INDEX_FIRST_SERVER_CLUB a INDEX_LAST_SERVER_CLUB ma si entra già facendo i++ quindi deve essere minore stretto di INDEX_LAST_SERVER_CLUB  
             i++;                                             
             if ((event[i].x == 0) && (event[i].t < event[s].t))
                 s = i;
@@ -1070,13 +961,7 @@ public class VerificaController {
         //System.out.println("----CALCOLO DELL'ARRIVO----");
         //System.out.println("Ultimo istante in cui è stato generato un arrivo è: " + sarrival);
 		r.selectStream(1 + streamIndex);
-        //int index = TimeSlotController.timeSlotSwitch(slotList, currentTime);
-		//int index = 1;
-		double lambda_arr = 24.0;
-        //System.out.println("Lo slot orario individuato è quello di indice: " + index);
-
-        //sarrival += exponential(1 / (slotList.get(index).getAveragePoisson() / 3600), r);
-        sarrival += exponential(1.0/lambda_arr, r);
+        sarrival += exponential(1.0/LAMBDA, r);
         //System.out.println("Quindi ora l'ultimo istante in cui è stato generato un arrivo è: " + (sarrival));
 
         return (sarrival);
@@ -1098,29 +983,4 @@ public class VerificaController {
 	    //System.out.println("Evento trovato con indice " + (e));
 	    return (e);   
 	}
-	
-	public static double acf(List<Double> data) {
-        int k = data.size();
-        double mean = 0.0;
-
-        // Calculate the mean of the batch means
-        for (double value : data) {
-            mean += value;
-        }
-        mean /= k;
-
-        double numerator = 0.0;
-        double denominator = 0.0;
-
-        // Compute the numerator and denominator for the lag-1 autocorrelation
-        for (int j = 0; j < k - 1; j++) {
-            numerator += (data.get(j) - mean) * (data.get(j + 1) - mean);
-        }
-        for (int j = 0; j < k; j++) {
-            denominator += Math.pow(data.get(j) - mean, 2);
-        }
-        System.out.println("Risultato finale: " + numerator/denominator);
-        return numerator / denominator;
-    }
-
 }

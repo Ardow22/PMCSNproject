@@ -40,9 +40,4 @@ public class Constants {
     // ---- TASSI DI ARRIVO [req/sec]----    
     public static final double LAMBDA = 1.53;
     
-    public static final double LAMBDA_VALID_1 = 16.0;
-    
-    public static final double LMABDA_VALID_2 = 32.0;
-    
-    
 }

@@ -17,7 +17,7 @@ public class FiniteHorizonController {
 	
 	static double START = 0.0; //tempo d'inizio della simulazione
     static double sarrival = START; //ultimo tempo in cui è stato generato un arrivo
-    static double STOP = 172800;
+    static double STOP = 21600;//la simulazione dura le 6 ore della fascia oraria
 	
 	
 	public void startAnalysis() {
@@ -53,6 +53,7 @@ public class FiniteHorizonController {
 		return r.getSeed();
 	}
 	
+	//scrittura dei file csv per realizzare i grafici
 	private void writeCsvLogin(TransientStats ts, long seed) {
 		String filepath = "loginTransiente.csv";
 		File file = new File(filepath);
