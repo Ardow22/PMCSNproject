@@ -54,16 +54,16 @@ public class App {
         }*/
         /*TransientController tc = new TransientController();
     	tc.startAnalysis();*/
-        /*VerificaController vc = new VerificaController();
-    	vc.startAnalysis();*/
-    	/*Autocorrelation a = new Autocorrelation();
+        VerificaController vc = new VerificaController();
+    	vc.startAnalysis();
+    	Autocorrelation a = new Autocorrelation();
     	try {
 			a.startCalculate();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-    	ExperimentsController exc = new ExperimentsController();
-    	exc.startAnalysis();
+		}
+    	/*ExperimentsController exc = new ExperimentsController();
+    	exc.startAnalysis();*/
     }
 }

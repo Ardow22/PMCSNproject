@@ -36,8 +36,10 @@ public class VerificaController {
 	
 	public void startAnalysis() {
 		
-		//1024, 64, 14 va quasi perfetto
-		int batchsize = 1080;
+		//1024, 64, 14 va quasi perfetto, 1080,80,20 è perfetto
+		//1012, 75, 10 CON BATCH UGUALI
+		//1024, 80, 16
+		int batchsize = 1136;
 		int numBatches = 80;
 		
 		int intervalLength = 480;
@@ -169,7 +171,7 @@ public class VerificaController {
         	iter++;
         	System.out.println("\n\n-------LA SIMULAZIONE VA AVANTI, QUINDI NUOVA ITERAZIONE, è LA NUMERO: " + iter);
         	
-        	if (totalLoginCheck != 0 && totalLoginCheck % batchsize == 0) {
+        	if (totalLoginCheck != 0 && totalLoginCheck % batchsize == 0 && batchCounter[0] < numBatches) {
     			batchCounter[0]++;
     			statsBatch(loginNode, nodeAreaLogin, t.current, totalLoginCheck, INDEX_FIRST_SERVER_LOGIN, INDEX_LAST_SERVER_LOGIN, sum, events[INDEX_ARRIVAL_LOGIN].t);
     			nodeAreaLogin = 0.0;
@@ -187,7 +189,7 @@ public class VerificaController {
     			loginNode.setCurrentStartTimeBatch(currentBatchStartTime);
     		}
     		//System.out.println("Job serviti nel batch UltimateTeam: " + totalUltimateTeamCheck);
-            if (totalUltimateTeamCheck != 0 && totalUltimateTeamCheck % batchsize == 0) {
+            if (totalUltimateTeamCheck != 0 && totalUltimateTeamCheck % batchsize == 0 && batchCounter[1] < numBatches) {
     			
     			batchCounter[1]++;
     			statsBatch(UTnode, nodeAreaUltimateTeam, t.current, totalUltimateTeamCheck, INDEX_FIRST_SERVER_ULTIMATE_TEAM, INDEX_LAST_SERVER_ULTIMATE_TEAM, sum, events[INDEX_ARRIVAL_ULTIMATE_TEAM].t);
@@ -206,7 +208,7 @@ public class VerificaController {
     			UTnode.setCurrentStartTimeBatch(currentBatchStartTime);
     		}
             //System.out.println("Job serviti nel batch Stagioni: " + totalStagioniCheck);
-            if (totalStagioniCheck != 0 && totalStagioniCheck % batchsize == 0) {
+            if (totalStagioniCheck != 0 && totalStagioniCheck % batchsize == 0 && batchCounter[2] < numBatches) {
     			batchCounter[2]++;
     			statsBatch(StagioniNode, nodeAreaStagioni, t.current, totalStagioniCheck, INDEX_FIRST_SERVER_STAGIONI, INDEX_LAST_SERVER_STAGIONI, sum, events[INDEX_ARRIVAL_STAGIONI].t);
     			nodeAreaStagioni = 0.0;
@@ -224,7 +226,7 @@ public class VerificaController {
     			StagioniNode.setCurrentStartTimeBatch(currentBatchStartTime);
     		}
             //System.out.println("Job serviti nel batch Club: " + totalClubCheck);
-            if (totalClubCheck != 0 && totalClubCheck % batchsize == 0) {
+            if (totalClubCheck != 0 && totalClubCheck % batchsize == 0 && batchCounter[3] < numBatches) {
     			batchCounter[3]++;
     			statsBatch(clubNode, nodeAreaClub, t.current, totalClubCheck, INDEX_FIRST_SERVER_CLUB, INDEX_LAST_SERVER_CLUB, sum, events[INDEX_ARRIVAL_CLUB].t);
     			nodeAreaClub = 0.0;
@@ -762,7 +764,7 @@ public class VerificaController {
 	
 	//rimozione dei batch di warmup
 	private void removeWarmUp(List<Double> list) {
-		int warmUpBatches = 20;
+		int warmUpBatches = 16;
 		list.subList(0, warmUpBatches).clear();
 	}
 	
