@@ -93,51 +93,26 @@ public class VerificaController {
 		long seed = 123456789;
 		rng.plantSeeds(seed);
         
-        //System.out.println("\n-----------INIZIALIZZAZIONE EVENTI NELLA SIMULAZIONE-------------");
-        int sumDebug = ALL_EVENTS_WITH_SAVE_STAT;
-        //System.out.println("Eventi totali previsti nella simulazione (INCLUSO SAVE_STAT): " + sumDebug);
-        
         MsqEvent[] events = new MsqEvent[ALL_EVENTS_WITH_SAVE_STAT];
         MsqSum[] sum = new MsqSum[ALL_EVENTS];
         
-        //System.out.println("Lista eventi (incluso SAVE_STAT): ");
         for (int i = 0; i < ALL_EVENTS_WITH_SAVE_STAT; i++) {
             events[i] = new MsqEvent();
         }
         for (int i = 0; i < ALL_EVENTS; i++) {
             sum[i] = new MsqSum();
         }
-        /*for (int i = 0; i < events.length; i++) {
-        	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-        	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-        	System.out.println(" ");
-        }*/
+        
         
         //inizializzazione clock
         MsqT t = new MsqT();
         t.current = START;  
-        /*System.out.println("\n-----INIZIALIZZAZIONE DEL CLOCK------------");
-        System.out.println("Siamo nell'istante: " + t.current); // DEBUG PRINT
-        System.out.println("Il prossimo evento avverrà all'istante: " + t.next);*/
-        
-        //PRIMO ARRIVO NEL SISTEMA GENERICO
-        ///System.out.println("\n-----------PRIMO ARRIVO AL SISTEMA--------");
         
         events[0].t = getArrival(rng, loginNode.getStreamIndex(), t.current);
         events[0].x = 1;
-        
-        //EVENTO SAVE_STAT
-        //System.out.println("\n------------GENERAZIONE SAVE_STAT----------");        
+                
         events[ALL_EVENTS].t = intervalLength;
         events[ALL_EVENTS].x = 1;
-        
-        
-        /*System.out.println("Nuova lista eventi: ");
-        for (int i = 0; i < events.length; i++) {
-        	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-        	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-        	System.out.println(" ");
-        }*/
         
         for (int i = 0; i < ALL_EVENTS; i++) {
         	if ((events[i].t != 0) && (events[i].x != 1)) {
@@ -147,13 +122,9 @@ public class VerificaController {
                 sum[i].served = 0;
         	}
         } 
-                
-        /*System.out.println("Inizializzazione completata. Pronto per l’iterazione.");
-        System.out.printf("\nSIMULAZIONE DURERà ALL'INFINITO\n");*/
         
         /* === INIZIO ITERAZIONE === */
         System.out.println("\n\n\n----INIZIA LA SIMULAZIONE------");
-        //System.out.println("La simulazione andrà avanti fino al numero di job prefissati");
         
         int iter = 0;
         
@@ -162,7 +133,6 @@ public class VerificaController {
         	batchCounter[i] = 0;
         }
         
-        //while (iter != 15) {
         while(events[0].x != 0) {
         	
         	iter++;
@@ -254,51 +224,11 @@ public class VerificaController {
         		System.out.println("-----------SIMULAZIONE FINITA---------------");
         		break;
         	}
-        	
-        	/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI: ");
-            for (int i = 0; i < events.length; i++) {
-            	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-            	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-            	System.out.println(" ");
-            }*/
-            
-            //System.out.println("SITUAZIONE DEL NUMERO DI JOB NEI CENTRI: ");
-            //System.out.println("totalJobsInLogin vale " + totalJobsInLogin);
-            //System.out.println("totalJobsInUltimateTeam vale " + totalJobsInUltimateTeam);
-            //System.out.println("totalJobsInStagioni vale " + totalJobsInStagioni);
-            //System.out.println("totalJobsInClub vale " + totalJobsInClub);
-            
-        	//System.out.println("\n----SITUAZIONE ABBANDONI-----------");
-        	/*System.out.println("ABBANDONI LOGIN: ");
-        	for (double info: dropoutsLoginQueue) {
-        		System.out.println(info);
-        	}
-        	System.out.println("ABBANDONI ULTIMATE TEAM: ");
-        	for (double info: dropoutsUltimateTeamQueue) {
-        		System.out.println(info);
-        	}
-        	System.out.println("ABBANDONI STAGIONI: ");
-        	for (double info: dropoutsStagioniQueue) {
-        		System.out.println(info);
-        	}
-        	System.out.println("ABBANDONI CLUB: ");
-        	for (double info: dropoutsClubQueue) {
-        		System.out.println(info);
-        	}*/
-        	
         	       	
             if(!dropoutsLoginQueue.isEmpty()) {
-        		//System.out.println("La lista di abbandoni del Login non è vuota");
         		events[INDEX_DROPOUT_LOGIN].t = dropoutsLoginQueue.get(0);
-        		//System.out.println("L'evento di abbandono del Login avverrà all'istante " + events[13].t);
         		events[INDEX_DROPOUT_LOGIN].x = 1; //attivo l'evento di abbandono
         		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DEL LOGIN: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni del Login è vuota, l'evento viene disattivato");
@@ -306,17 +236,8 @@ public class VerificaController {
         	}
         	
         	if(!dropoutsUltimateTeamQueue.isEmpty()) {
-        		//System.out.println("La lista di abbandoni della coda di Ultimate Team non è vuota");
         		events[INDEX_DROPOUT_ULTIMATE_TEAM].t = dropoutsUltimateTeamQueue.get(0);
-        		//System.out.println("L'evento di abbandono della coda di Ultimate Team avverrà all'istante " + events[28].t);
         		events[INDEX_DROPOUT_ULTIMATE_TEAM].x = 1; //attivo l'evento di abbandono
-        		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO Di ULTIMATE TEAM: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda di Ultimate Team è vuota, l'evento viene disattivato");
@@ -329,12 +250,6 @@ public class VerificaController {
         		//System.out.println("L'evento di abbandono avverrà della coda delle Stagioni all'istante " + events[32].t);
         		events[INDEX_DROPOUT_STAGIONI].x = 1; //attivo l'evento di abbandono
         		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DELLE STAGIONI: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda delle Stagioni è vuota, l'evento viene disattivato");
@@ -344,15 +259,8 @@ public class VerificaController {
         	if(!dropoutsClubQueue.isEmpty()) {
         		//System.out.println("La lista di abbandoni della coda di Club non è vuota");
         		events[INDEX_DROPOUT_CLUB].t = dropoutsClubQueue.get(0);
-        		//System.out.println("L'evento di abbandono avverrà all'istante " + events[39].t);
         		events[INDEX_DROPOUT_CLUB].x = 1; //attivo l'evento di abbandono
         		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DI CLUB: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda di Club è vuota, l'evento viene disattivato");
@@ -381,14 +289,7 @@ public class VerificaController {
             System.out.println("I due tempi coincidono, quindi andiamo a processare l'evento " + e);*/
 
             if (e == ALL_EVENTS) {
-            	//System.out.println("\n---------L'EVENTO è SAVE_STAT-------------");
-            	//System.out.println("Salvo le statistiche dei tempi medi di risposta");
-        		//node area/numero di job serviti, ovviamente controllando prima che sia stato servito qualcuno
-        		//di conseguenza ogni intervalLength di tempo aggiungo un valore alla lista di ogni centro
-        		//non sembra esserci azzeramento
-        		//updateObservations();
             	events[ALL_EVENTS].t += intervalLength;
-            	//System.out.println("Prossimo evento di SAVE_STAT: " + events[ALL_EVENTS].t);
             } else if (e == INDEX_ARRIVAL_LOGIN) { //e == 0
             	System.out.println("\n---------L'EVENTO è UN NUOVO ARRIVO NEL LOGIN-------------");
             	totalJobsInLogin++;
@@ -484,8 +385,6 @@ public class VerificaController {
             		firstCompletionLogin = t.current; 
             	}
             	boolean abandon = false;
-            	//int percorsi = generateDestination(rng, loginNode.getStreamIndex());
-            	//boolean abandon = generateAbandon(rng, loginNode.getStreamIndex(), not_P1);//qua si decide se l'utente abbandona oppure supera i controlli
             	if (abandon == true) { //se l'utente non supera i controlli
             		//System.out.println("L'utente non ha superato i controlli del Login");
             		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile

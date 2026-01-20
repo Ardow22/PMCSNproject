@@ -165,31 +165,18 @@ public class TransientController {
     	ts.getTransientStatsClub().add(0.0);
     	
         
-        //while (iter !=15) {
+        
         while(events[0].x != 0 || totalJobsInLogin+totalJobsInUltimateTeam+totalJobsInStagioni+totalJobsInClub != 0) {
         	
         	iter++;
         	System.out.println("\n\n-------LA SIMULAZIONE VA AVANTI, QUINDI NUOVA ITERAZIONE, è LA NUMERO: " + iter);	
         	     
-        	/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI: ");
-            for (int i = 0; i < events.length; i++) {
-            	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-            	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-            	System.out.println(" ");
-            }*/
-        	
         	if(!dropoutsLoginQueue.isEmpty()) {
         		//System.out.println("La lista di abbandoni del Login non è vuota");
         		events[INDEX_DROPOUT_LOGIN].t = dropoutsLoginQueue.get(0);
         		//System.out.println("L'evento di abbandono del Login avverrà all'istante " + events[13].t);
         		events[INDEX_DROPOUT_LOGIN].x = 1; //attivo l'evento di abbandono
         		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DEL LOGIN: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni del Login è vuota, l'evento viene disattivato");
@@ -201,13 +188,6 @@ public class TransientController {
         		events[INDEX_DROPOUT_ULTIMATE_TEAM].t = dropoutsUltimateTeamQueue.get(0);
         		//System.out.println("L'evento di abbandono della coda di Ultimate Team avverrà all'istante " + events[28].t);
         		events[INDEX_DROPOUT_ULTIMATE_TEAM].x = 1; //attivo l'evento di abbandono
-        		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO Di ULTIMATE TEAM: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda di Ultimate Team è vuota, l'evento viene disattivato");
@@ -220,12 +200,6 @@ public class TransientController {
         		//System.out.println("L'evento di abbandono avverrà della coda delle Stagioni all'istante " + events[32].t);
         		events[INDEX_DROPOUT_STAGIONI].x = 1; //attivo l'evento di abbandono
         		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DELLE STAGIONI: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda delle Stagioni è vuota, l'evento viene disattivato");
@@ -238,12 +212,6 @@ public class TransientController {
         		//System.out.println("L'evento di abbandono avverrà all'istante " + events[39].t);
         		events[INDEX_DROPOUT_CLUB].x = 1; //attivo l'evento di abbandono
         		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DI CLUB: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda di Club è vuota, l'evento viene disattivato");
@@ -383,8 +351,6 @@ public class TransientController {
             		firstCompletionLogin = t.current; 
             	}
             	boolean abandon = false;
-            	//int percorsi = generateDestination(rng, loginNode.getStreamIndex());
-            	//boolean abandon = generateAbandon(rng, loginNode.getStreamIndex(), not_P1);//qua si decide se l'utente abbandona oppure supera i controlli
             	if (abandon == true) { //se l'utente non supera i controlli
             		//System.out.println("L'utente non ha superato i controlli del Login");
             		double abandonTime = t.current + 0.01;//si aggiunge 0.01 per realizzare l'evento il prima possibile
@@ -613,7 +579,7 @@ public class TransientController {
          * return the index of the available server idle longest
          * -----------------------------------------------------
          */
-		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
+		
         int s;
 
         int i = INDEX_FIRST_SERVER_LOGIN; //i server Login iniziano dall'indice 1 in events
@@ -655,7 +621,6 @@ public class TransientController {
          * return the index of the available server idle longest
          * -----------------------------------------------------
          */
-		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
         int s;
 
         int i = INDEX_FIRST_SERVER_STAGIONI; //i server delle Stagioni iniziano dall'indice 30 in events
@@ -677,10 +642,10 @@ public class TransientController {
          * return the index of the available server idle longest
          * -----------------------------------------------------
          */
-		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
+		
         int s;
 
-        int i = INDEX_FIRST_SERVER_CLUB; //i server infopoint iniziano dall'indice 36 in events
+        int i = INDEX_FIRST_SERVER_CLUB; 
 
         while (event[i].x == 1) 
             i++;                       

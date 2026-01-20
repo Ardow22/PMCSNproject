@@ -288,36 +288,6 @@ public class ExperimentsController {
         		break;
         	}
         	
-        	/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI: ");
-            for (int i = 0; i < events.length; i++) {
-            	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-            	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-            	System.out.println(" ");
-            }*/
-            
-            //System.out.println("SITUAZIONE DEL NUMERO DI JOB NEI CENTRI: ");
-            //System.out.println("totalJobsInLogin vale " + totalJobsInLogin);
-            //System.out.println("totalJobsInUltimateTeam vale " + totalJobsInUltimateTeam);
-            //System.out.println("totalJobsInStagioni vale " + totalJobsInStagioni);
-            //System.out.println("totalJobsInClub vale " + totalJobsInClub);
-            
-        	//System.out.println("\n----SITUAZIONE ABBANDONI-----------");
-        	/*System.out.println("ABBANDONI LOGIN: ");
-        	for (double info: dropoutsLoginQueue) {
-        		System.out.println(info);
-        	}
-        	System.out.println("ABBANDONI ULTIMATE TEAM: ");
-        	for (double info: dropoutsUltimateTeamQueue) {
-        		System.out.println(info);
-        	}
-        	System.out.println("ABBANDONI STAGIONI: ");
-        	for (double info: dropoutsStagioniQueue) {
-        		System.out.println(info);
-        	}
-        	System.out.println("ABBANDONI CLUB: ");
-        	for (double info: dropoutsClubQueue) {
-        		System.out.println(info);
-        	}*/
         	
         	       	
             if(!dropoutsLoginQueue.isEmpty()) {
@@ -325,13 +295,6 @@ public class ExperimentsController {
         		events[INDEX_DROPOUT_LOGIN].t = dropoutsLoginQueue.get(0);
         		//System.out.println("L'evento di abbandono del Login avverrà all'istante " + events[13].t);
         		events[INDEX_DROPOUT_LOGIN].x = 1; //attivo l'evento di abbandono
-        		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DEL LOGIN: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni del Login è vuota, l'evento viene disattivato");
@@ -344,12 +307,6 @@ public class ExperimentsController {
         		//System.out.println("L'evento di abbandono della coda di Ultimate Team avverrà all'istante " + events[28].t);
         		events[INDEX_DROPOUT_ULTIMATE_TEAM].x = 1; //attivo l'evento di abbandono
         		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO Di ULTIMATE TEAM: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda di Ultimate Team è vuota, l'evento viene disattivato");
@@ -362,12 +319,6 @@ public class ExperimentsController {
         		//System.out.println("L'evento di abbandono avverrà della coda delle Stagioni all'istante " + events[32].t);
         		events[INDEX_DROPOUT_STAGIONI].x = 1; //attivo l'evento di abbandono
         		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DELLE STAGIONI: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda delle Stagioni è vuota, l'evento viene disattivato");
@@ -380,12 +331,6 @@ public class ExperimentsController {
         		//System.out.println("L'evento di abbandono avverrà all'istante " + events[39].t);
         		events[INDEX_DROPOUT_CLUB].x = 1; //attivo l'evento di abbandono
         		
-        		/*System.out.println("SITUAZIONI DELLA LISTA DEGLI EVENTI AGGIUNGENDO L'ABBANDONO DI CLUB: ");
-                for (int i = 0; i < events.length; i++) {
-                	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-                	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-                	System.out.println(" ");
-                }*/
         	}
         	else {
         		//System.out.println("La lista di abbandoni della coda di Club è vuota, l'evento viene disattivato");
@@ -414,12 +359,6 @@ public class ExperimentsController {
             System.out.println("I due tempi coincidono, quindi andiamo a processare l'evento " + e);*/
 
             if (e == ALL_EVENTS) {
-            	//System.out.println("\n---------L'EVENTO è SAVE_STAT-------------");
-            	//System.out.println("Salvo le statistiche dei tempi medi di risposta");
-        		//node area/numero di job serviti, ovviamente controllando prima che sia stato servito qualcuno
-        		//di conseguenza ogni intervalLength di tempo aggiungo un valore alla lista di ogni centro
-        		//non sembra esserci azzeramento
-        		//updateObservations();
             	events[ALL_EVENTS].t += intervalLength;
             	//System.out.println("Prossimo evento di SAVE_STAT: " + events[ALL_EVENTS].t);
             } else if (e == INDEX_ARRIVAL_LOGIN) { //e == 0
@@ -933,7 +872,7 @@ public class ExperimentsController {
          * return the index of the available server idle longest
          * -----------------------------------------------------
          */
-		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
+		
         int s;
 
         int i = INDEX_FIRST_SERVER_LOGIN; //i server Login iniziano dall'indice 1 in events
@@ -975,7 +914,7 @@ public class ExperimentsController {
          * return the index of the available server idle longest
          * -----------------------------------------------------
          */
-		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
+		
         int s;
 
         int i = INDEX_FIRST_SERVER_STAGIONI; //i server delle Stagioni iniziano dall'indice 30 in events
@@ -997,7 +936,7 @@ public class ExperimentsController {
          * return the index of the available server idle longest
          * -----------------------------------------------------
          */
-		//System.out.println("CERCHIAMO IL SERVER PER L'INFOPOINT");
+		
         int s;
 
         int i = INDEX_FIRST_SERVER_CLUB; //i server infopoint iniziano dall'indice 36 in events
@@ -1069,11 +1008,6 @@ public class ExperimentsController {
         //System.out.println("----CALCOLO DELL'ARRIVO----");
         //System.out.println("Ultimo istante in cui è stato generato un arrivo è: " + sarrival);
 		r.selectStream(1 + streamIndex);
-        //int index = TimeSlotController.timeSlotSwitch(slotList, currentTime);
-		//int index = 1;
-        //System.out.println("Lo slot orario individuato è quello di indice: " + index);
-
-        //sarrival += exponential(1 / (slotList.get(index).getAveragePoisson() / 3600), r);
         sarrival += exponential(1.0/LAMBDA, r);
         //System.out.println("Quindi ora l'ultimo istante in cui è stato generato un arrivo è: " + (sarrival));
 

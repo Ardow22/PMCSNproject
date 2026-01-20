@@ -67,7 +67,7 @@ class MsqEvent {
 
 
 
-public class ComputationalModelController {
+public class ComputationalModelController { //è una classe di debug per fare prove
 		
 	static double START = 0.0; //tempo d'inizio della simulazione
     static double STOP = 6 * 3600; //dopo quanto tempo termina la simulazione
