@@ -36,9 +36,6 @@ public class VerificaController {
 	
 	public void startAnalysis() {
 		
-		//1024, 64, 14 va quasi perfetto, 1080,80,20 è perfetto
-		//1012, 75, 10 CON BATCH UGUALI
-		//1024, 80, 16
 		int batchsize = 1088;
 		int numBatches = 140;
 		
