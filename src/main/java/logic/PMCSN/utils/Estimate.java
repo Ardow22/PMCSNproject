@@ -123,7 +123,7 @@ public void createInterval(String directory, String filename) {
     	    } else if (fname.contains("tempidirisposta")) {
     	        misura = "E(Ts)";
     	    } else if (fname.contains("tempidiservizio")) {
-    	        misura = "E(S)";
+    	        misura = "E(Si)";
     	    } else if (fname.contains("utilizzazione")) {
     	        misura = "ρ";
     	    }

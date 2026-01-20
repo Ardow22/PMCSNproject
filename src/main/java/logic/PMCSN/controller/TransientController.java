@@ -47,7 +47,8 @@ public class TransientController {
 	
 	static double START = 0.0; //tempo d'inizio della simulazione
     static double sarrival = START; //ultimo tempo in cui è stato generato un arrivo
-    static double STOP = 172800;
+    //static double STOP = 172800;
+    static double STOP = 21600;
     static int INTERVAL_DATA = 20;
     static double COLUMNS = (STOP/INTERVAL_DATA) + 1;
 	
@@ -60,7 +61,8 @@ public class TransientController {
 		seeds[0] = 123456789;
 		Rngs r = new Rngs();
 		
-		for (int i = 0; i < 10; i++) {
+		//for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 150; i++) {
 			System.out.println("ITERAZIONE: " + i);
 			TransientStats ts = new TransientStats();//va inizializzato dentro al ciclo perché ad ogni nuova run raccolgo nuove statistiche da 0
 			sarrival = START;
@@ -69,22 +71,11 @@ public class TransientController {
 			writeCsv(ts.getTransientStatsUT(), seeds[i], filenameUT);
 			writeCsv(ts.getTransientStatsStagioni(), seeds[i], filenameStagioni);
 			writeCsv(ts.getTransientStatsClub(), seeds[i], filenameClub);
-			//write_file(ts, seed) delle statistiche calcolate nella singola run
-			//appendStats salvo tutto: statistiche run singola, statistiche check point
+			
 		}
-		//grafico per il transitorio
 	}
 	
 	private long finiteHorizonSimulation(long seed, Rngs rng, TransientStats ts) {
-		/*r.plantSeeds(seed);
-		System.out.println("Il seme è: " + seed);
-		
-		double numero = Math.random();
-		ts.getTransientStatsLogin().add(numero);
-		numero = Math.random();
-		ts.getTransientStatsLogin().add(numero);
-		numero = Math.random();
-		ts.getTransientStatsLogin().add(numero);*/
 		
 		LoginNode loginNode = new LoginNode();
 		StagioniNode StagioniNode = new StagioniNode();
@@ -152,13 +143,6 @@ public class TransientController {
         //System.out.println("\n------------GENERAZIONE SAVE_STAT----------");        
         events[ALL_EVENTS].t = INTERVAL_DATA;
         events[ALL_EVENTS].x = 1;
-        
-        /*System.out.println("Nuova lista eventi: ");
-        for (int i = 0; i < events.length; i++) {
-        	System.out.println("Evento " + i + ", tempo in cui avverrà: " + events[i].t);
-        	System.out.println("Evento " + i + ", stato dell'evento: " + events[i].x);
-        	System.out.println(" ");
-        }*/
 
         
         for (int i = 0; i < ALL_EVENTS; i++) {

@@ -4,12 +4,12 @@ public class Events {
 
     // === UTENTI -> LOGIN ===
     public static int ARRIVAL_EVENT_LOGIN = 1;
-    public static int SERVERS_LOGIN = 6;
+    public static int SERVERS_LOGIN = 7;
     public static int DROPOUT_EVENT_LOGIN = 1;
 
     // === UTENTI CHE GIOCANO AD ULTIMATE TEAM -> SERVER DI ACCESSO AD ULTIMATE TEAM ===
     public static int ARRIVAL_EVENT_ULTIMATE_TEAM = 1;
-    public static int SERVERS_ULTIMATE_TEAM = 4;
+    public static int SERVERS_ULTIMATE_TEAM = 5;
     public static int DROPOUT_EVENT_ULTIMATE_TEAM = 1;
     
     
@@ -20,7 +20,7 @@ public class Events {
     
     // === UTENTI CHE GIOCANO A CLUB -> SERVER DI ACCESSO A CLUB ===
     public static int ARRIVAL_EVENT_CLUB = 1;
-    public static int SERVERS_CLUB = 5;
+    public static int SERVERS_CLUB = 4;
     public static int DROPOUT_EVENT_CLUB = 1;
     
     // === TOTALE EVENTI PER BLOCCO ===
@@ -60,23 +60,23 @@ public class Events {
     
      public static int INDEX_ARRIVAL_LOGIN = 0;
      public static int INDEX_FIRST_SERVER_LOGIN = 1;
-     public static int INDEX_LAST_SERVER_LOGIN = 6;
-     public static int INDEX_DROPOUT_LOGIN = 7;
+     public static int INDEX_LAST_SERVER_LOGIN = 7;
+     public static int INDEX_DROPOUT_LOGIN = 8;
  
-     public static int INDEX_ARRIVAL_ULTIMATE_TEAM = 8;
-     public static int INDEX_FIRST_SERVER_ULTIMATE_TEAM = 9;
-     public static int INDEX_LAST_SERVER_ULTIMATE_TEAM = 12;
-     public static int INDEX_DROPOUT_ULTIMATE_TEAM = 13;
+     public static int INDEX_ARRIVAL_ULTIMATE_TEAM = 9;
+     public static int INDEX_FIRST_SERVER_ULTIMATE_TEAM = 10;
+     public static int INDEX_LAST_SERVER_ULTIMATE_TEAM = 14;
+     public static int INDEX_DROPOUT_ULTIMATE_TEAM = 15;
      
-     public static int INDEX_ARRIVAL_STAGIONI = 14;
-     public static int INDEX_FIRST_SERVER_STAGIONI = 15;
-     public static int INDEX_LAST_SERVER_STAGIONI = 17;
-     public static int INDEX_DROPOUT_STAGIONI = 18;
+     public static int INDEX_ARRIVAL_STAGIONI = 16;
+     public static int INDEX_FIRST_SERVER_STAGIONI = 17;
+     public static int INDEX_LAST_SERVER_STAGIONI = 19;
+     public static int INDEX_DROPOUT_STAGIONI = 20;
      
-     public static int INDEX_ARRIVAL_CLUB = 19;
-     public static int INDEX_FIRST_SERVER_CLUB = 20;
-     public static int INDEX_LAST_SERVER_CLUB = 24;
-     public static int INDEX_DROPOUT_CLUB = 25;
+     public static int INDEX_ARRIVAL_CLUB = 21;
+     public static int INDEX_FIRST_SERVER_CLUB = 22;
+     public static int INDEX_LAST_SERVER_CLUB = 25;
+     public static int INDEX_DROPOUT_CLUB = 26;
 
     
 

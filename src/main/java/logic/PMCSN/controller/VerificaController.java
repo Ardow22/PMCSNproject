@@ -39,8 +39,8 @@ public class VerificaController {
 		//1024, 64, 14 va quasi perfetto, 1080,80,20 è perfetto
 		//1012, 75, 10 CON BATCH UGUALI
 		//1024, 80, 16
-		int batchsize = 1136;
-		int numBatches = 80;
+		int batchsize = 1088;
+		int numBatches = 140;
 		
 		int intervalLength = 480;
 		
@@ -764,7 +764,7 @@ public class VerificaController {
 	
 	//rimozione dei batch di warmup
 	private void removeWarmUp(List<Double> list) {
-		int warmUpBatches = 16;
+		int warmUpBatches = 20;
 		list.subList(0, warmUpBatches).clear();
 	}
 	
@@ -958,13 +958,10 @@ public class VerificaController {
         return (-mean * Math.log(1.0 - r.random()));
     }
 	
-	//funzione per generare il prossimo arrivo in base allo slot orario
+	//funzione per generare il prossimo arrivo
 	double getArrival(Rngs r, int streamIndex, double currentTime) {
-        //System.out.println("----CALCOLO DELL'ARRIVO----");
-        //System.out.println("Ultimo istante in cui è stato generato un arrivo è: " + sarrival);
 		r.selectStream(1 + streamIndex);
         sarrival += exponential(1.0/LAMBDA, r);
-        //System.out.println("Quindi ora l'ultimo istante in cui è stato generato un arrivo è: " + (sarrival));
 
         return (sarrival);
     }

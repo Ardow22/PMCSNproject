@@ -92,16 +92,61 @@ public class Autocorrelation {
             System.out.println("  " + j + "          " + g.format(cosum[j] / cosum[0]));*/
         
      // Stampa solo lag j = 1
-        System.out.println("\nFile: " + file.getName());
+        
+        
+        /*System.out.println("\nFile: " + file.getName());
         System.out.println("Per " + n + " dati, media = " + f.format(mean) +
                 ", stdev = " + f.format(Math.sqrt(cosum[0])));
 
         int jj = 1; // lag desiderato
         System.out.println("Lag j = " + jj + ", autocorrelazione r[j] = " +
                 g.format(cosum[jj] / cosum[0]));
-
+        */
+        
+        printFormulario(file.getName(), cosum, g);          
         ReadThis.close();
 		
 	}
+	
+	private void printFormulario(String filename, double cosum[], DecimalFormat df) {
+	    //System.out.println("\n");
+	    String fname = filename.toLowerCase();
+	    String centro = null;
+	    String misura = null;
+
+	    /* ===================== IDENTIFICAZIONE CENTRO ===================== */
+	    if (fname.contains("login")) {
+	        centro = "Login";
+	    } else if (fname.contains("ultimate")) {
+	        centro = "Ultimate Team";
+	    } else if (fname.contains("stagioni")) {
+	        centro = "Stagioni";
+	    } else if (fname.contains("club")) {
+	        centro = "Club";
+	    }
+
+	    /* ===================== IDENTIFICAZIONE MISURA ===================== */
+	    if (fname.contains("popolazione_coda")) {
+	        misura = "E(Nq)";
+	    } else if (fname.contains("popolazione_sistema")) {
+	        misura = "E(Ns)";
+	    } else if (fname.contains("tempi_in_coda")) {
+	        misura = "E(Tq)";
+	    } else if (fname.contains("tempidirisposta")) {
+	        misura = "E(Ts)";
+	    } else if (fname.contains("tempidiservizio")) {
+	        misura = "E(Si)";
+	    } else if (fname.contains("utilizzazione")) {
+	        misura = "ρ";
+	    }
+        int jj = 1;
+	    /* ===================== STAMPA ===================== */
+	    if (centro != null && misura != null) {
+	        System.out.println("\nCentro: " + centro);
+	        System.out.println("Autocorrelazione al lag j = " + jj);
+	        System.out.println(misura + ": " + df.format(cosum[jj] / cosum[0]));
+	    }
+}
+
 
 }

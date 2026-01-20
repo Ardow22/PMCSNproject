@@ -10,6 +10,17 @@ public class Constants {
 	public static final double LOWER_B_LOGIN = 2.70;
 	public static final double UPPER_B_LOGIN = 4.50;
 	
+	//per validazione
+	/*public static final double DEV_ST_LOGIN = 0.40;
+	public static final double LOWER_B_LOGIN = 5.40;
+	public static final double UPPER_B_LOGIN = 9.00;
+	
+	public static final double DEV_ST_LOGIN = 0.10;
+	public static final double LOWER_B_LOGIN = 1.35;
+	public static final double UPPER_B_LOGIN = 2.25;*/
+	
+	
+	
 	//------ ULTIMATE TEAM ------
 	public static final double DEV_ST_UT = 0.25;
 	public static final double LOWER_B_UT = 3.00;
@@ -39,5 +50,6 @@ public class Constants {
 
     // ---- TASSI DI ARRIVO [req/sec]----    
     public static final double LAMBDA = 1.53;
+    //public static final double LAMBDA = 3.06;
     
 }

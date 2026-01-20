@@ -67,15 +67,15 @@ public class ExperimentsController {
 	private ClubNode clubNode;
 	private UltimateTeamNode UTnode;
 	
-	static int BATCHSIZE = 1080;
-	static int NUMBATCHES = 80;
+	static int BATCHSIZE = 1088;
+	static int NUMBATCHES = 140;
 	
 	public void startAnalysis() {
 		
-		String filenameLogin = "batchLogin.csv";
-		String filenameUT = "batchUT.csv";
-		String filenameStagioni = "batchStagioni.csv";
-		String filenameClub = "batchClub.csv";
+		String filenameLogin = "experimentsLogin.csv";
+		String filenameUT = "experimentsUT.csv";
+		String filenameStagioni = "experimentsStagioni.csv";
+		String filenameClub = "experimentsClub.csv";
 		
 		int intervalLength = 480;
 		
@@ -201,7 +201,7 @@ public class ExperimentsController {
         	iter++;
         	System.out.println("\n\n-------LA SIMULAZIONE VA AVANTI, QUINDI NUOVA ITERAZIONE, è LA NUMERO: " + iter);
         	
-        	if (totalLoginCheck != 0 && totalLoginCheck % BATCHSIZE == 0) {
+        	if (totalLoginCheck != 0 && totalLoginCheck % BATCHSIZE == 0 && batchCounter[0] < NUMBATCHES) {
     			batchCounter[0]++;
     			statsBatch(loginNode, nodeAreaLogin, t.current, totalLoginCheck, INDEX_FIRST_SERVER_LOGIN, INDEX_LAST_SERVER_LOGIN, sum, events[INDEX_ARRIVAL_LOGIN].t);
     			nodeAreaLogin = 0.0;
@@ -219,7 +219,7 @@ public class ExperimentsController {
     			loginNode.setCurrentStartTimeBatch(currentBatchStartTime);
     		}
     		//System.out.println("Job serviti nel batch UltimateTeam: " + totalUltimateTeamCheck);
-            if (totalUltimateTeamCheck != 0 && totalUltimateTeamCheck % BATCHSIZE == 0) {
+            if (totalUltimateTeamCheck != 0 && totalUltimateTeamCheck % BATCHSIZE == 0 && batchCounter[1] < NUMBATCHES) {
     			
     			batchCounter[1]++;
     			statsBatch(UTnode, nodeAreaUltimateTeam, t.current, totalUltimateTeamCheck, INDEX_FIRST_SERVER_ULTIMATE_TEAM, INDEX_LAST_SERVER_ULTIMATE_TEAM, sum, events[INDEX_ARRIVAL_ULTIMATE_TEAM].t);
@@ -238,7 +238,7 @@ public class ExperimentsController {
     			UTnode.setCurrentStartTimeBatch(currentBatchStartTime);
     		}
             //System.out.println("Job serviti nel batch Stagioni: " + totalStagioniCheck);
-            if (totalStagioniCheck != 0 && totalStagioniCheck % BATCHSIZE == 0) {
+            if (totalStagioniCheck != 0 && totalStagioniCheck % BATCHSIZE == 0 && batchCounter[2] < NUMBATCHES) {
     			batchCounter[2]++;
     			statsBatch(StagioniNode, nodeAreaStagioni, t.current, totalStagioniCheck, INDEX_FIRST_SERVER_STAGIONI, INDEX_LAST_SERVER_STAGIONI, sum, events[INDEX_ARRIVAL_STAGIONI].t);
     			nodeAreaStagioni = 0.0;
@@ -256,7 +256,7 @@ public class ExperimentsController {
     			StagioniNode.setCurrentStartTimeBatch(currentBatchStartTime);
     		}
             //System.out.println("Job serviti nel batch Club: " + totalClubCheck);
-            if (totalClubCheck != 0 && totalClubCheck % BATCHSIZE == 0) {
+            if (totalClubCheck != 0 && totalClubCheck % BATCHSIZE == 0 && batchCounter[3] < NUMBATCHES) {
     			batchCounter[3]++;
     			statsBatch(clubNode, nodeAreaClub, t.current, totalClubCheck, INDEX_FIRST_SERVER_CLUB, INDEX_LAST_SERVER_CLUB, sum, events[INDEX_ARRIVAL_CLUB].t);
     			nodeAreaClub = 0.0;
@@ -691,7 +691,16 @@ public class ExperimentsController {
             }
         }
         
-        /*removeWarmUp(loginNode.getPopolazioneDellaCodaBatch());
+        //LOGIN
+        writeCsv(loginNode.getTempiMediDiRispostaBatch(), seed, filenameLogin);
+        //ULTIMATE TEAM
+        writeCsv(UTnode.getTempiMediDiRispostaBatch(), seed, filenameUT);
+        //STAGIONI
+        writeCsv(StagioniNode.getTempiMediDiRispostaBatch(), seed, filenameStagioni);
+        //CLUB
+        writeCsv(clubNode.getTempiMediDiRispostaBatch(), seed, filenameClub);
+        
+        removeWarmUp(loginNode.getPopolazioneDellaCodaBatch());
         removeWarmUp(loginNode.getPopolazioneDelSistemaBatch());
         removeWarmUp(loginNode.getTempiDiServizioBatch());
         removeWarmUp(loginNode.getTempiMediDiRispostaBatch());
@@ -721,18 +730,74 @@ public class ExperimentsController {
         removeWarmUp(clubNode.getTempiMediDiRispostaBatch());
         removeWarmUp(clubNode.getTempiMediInCodaBatch());
         removeWarmUp(clubNode.getInterarriviBatch());
-        removeWarmUp(clubNode.getUtilizzazioneBatch());*/
+        removeWarmUp(clubNode.getUtilizzazioneBatch());
         
+      //LOGIN
+        writeFile(loginNode.getPopolazioneDellaCodaBatch(), "batch_reports", "popolazione_coda_login");
+        writeFile(loginNode.getPopolazioneDelSistemaBatch(), "batch_reports","popolazione_sistema_login");
+        writeFile(loginNode.getTempiDiServizioBatch(), "batch_reports", "tempiDiservizio_login");
+        writeFile(loginNode.getTempiMediDiRispostaBatch(), "batch_reports","tempiDiRisposta_login");
+        writeFile(loginNode.getTempiMediInCodaBatch(), "batch_reports", "tempi_in_coda_login");
+        //writeFile(loginNode.getInterarriviBatch(),"batch_reports", "interarrivi_login");
+        writeFile(loginNode.getUtilizzazioneBatch(),"batch_reports", "utilizzazione_login");
         
-        
-        //LOGIN
-        writeCsv(loginNode.getTempiMediDiRispostaBatch(), seed, filenameLogin);
         //ULTIMATE TEAM
-        writeCsv(UTnode.getTempiMediDiRispostaBatch(), seed, filenameUT);
+        writeFile(UTnode.getPopolazioneDellaCodaBatch(), "batch_reports", "popolazione_coda_UltimateTeam");
+        writeFile(UTnode.getPopolazioneDelSistemaBatch(), "batch_reports","popolazione_sistema_UltimateTeam");
+        writeFile(UTnode.getTempiDiServizioBatch(), "batch_reports", "tempiDiservizio_UltimateTeam");
+        writeFile(UTnode.getTempiMediDiRispostaBatch(), "batch_reports","tempiDiRisposta_UltimateTeam");
+        writeFile(UTnode.getTempiMediInCodaBatch(), "batch_reports", "tempi_in_coda_UltimateTeam");
+        //writeFile(UTnode.getInterarriviBatch(),"batch_reports", "interarrivi_UT");
+        writeFile(UTnode.getUtilizzazioneBatch(),"batch_reports", "utilizzazione_UltimateTeam");
+        
         //STAGIONI
-        writeCsv(StagioniNode.getTempiMediDiRispostaBatch(), seed, filenameStagioni);
+        writeFile(StagioniNode.getPopolazioneDellaCodaBatch(), "batch_reports", "popolazione_coda_Stagioni");
+        writeFile(StagioniNode.getPopolazioneDelSistemaBatch(), "batch_reports","popolazione_sistema_Stagioni");
+        writeFile(StagioniNode.getTempiDiServizioBatch(), "batch_reports", "tempiDiservizio_Stagioni");
+        writeFile(StagioniNode.getTempiMediDiRispostaBatch(), "batch_reports","tempiDiRisposta_Stagioni");
+        writeFile(StagioniNode.getTempiMediInCodaBatch(), "batch_reports", "tempi_in_coda_Stagioni");
+        //writeFile(StagioniNode.getInterarriviBatch(),"batch_reports", "interarrivi_Stagioni");
+        writeFile(StagioniNode.getUtilizzazioneBatch(),"batch_reports", "utilizzazione_Stagioni");
+        
         //CLUB
-        writeCsv(clubNode.getTempiMediDiRispostaBatch(), seed, filenameClub);
+        writeFile(clubNode.getPopolazioneDellaCodaBatch(), "batch_reports", "popolazione_coda_Club");
+        writeFile(clubNode.getPopolazioneDelSistemaBatch(), "batch_reports","popolazione_sistema_Club");
+        writeFile(clubNode.getTempiDiServizioBatch(), "batch_reports", "tempiDiservizio_Club");
+        writeFile(clubNode.getTempiMediDiRispostaBatch(), "batch_reports","tempiDiRisposta_Club");
+        writeFile(clubNode.getTempiMediInCodaBatch(), "batch_reports", "tempi_in_coda_Club");
+        //writeFile(clubNode.getInterarriviBatch(),"batch_reports", "interarrivi_Club");
+        writeFile(clubNode.getUtilizzazioneBatch(),"batch_reports", "utilizzazione_Club");
+        
+        Estimate estimate = new Estimate();
+
+        List<String> filenames = Arrays.asList(
+        		"popolazione_coda_login",
+                "popolazione_sistema_login",
+                "tempiDiservizio_login",
+                "tempiDiRisposta_login",
+                "tempi_in_coda_login",
+                "utilizzazione_login", 
+        		"popolazione_coda_UltimateTeam","popolazione_sistema_UltimateTeam", "tempiDiservizio_UltimateTeam","tempiDiRisposta_UltimateTeam",
+                "tempi_in_coda_UltimateTeam","utilizzazione_UltimateTeam", 
+                "popolazione_coda_Stagioni",
+                "popolazione_sistema_Stagioni",
+                "tempiDiservizio_Stagioni",
+                "tempiDiRisposta_Stagioni",
+                "tempi_in_coda_Stagioni",
+                "utilizzazione_Stagioni",
+                "popolazione_coda_Club",
+                "popolazione_sistema_Club",
+                "tempiDiservizio_Club",
+                "tempiDiRisposta_Club",
+                "tempi_in_coda_Club",
+                "utilizzazione_Club"
+                	);
+        
+        for (String filename : filenames) {
+            estimate.createInterval("batch_reports", filename);
+        }
+
+        
 	}  
 	
 	public static void writeFile(List<Double> list, String directoryName, String filename) {
