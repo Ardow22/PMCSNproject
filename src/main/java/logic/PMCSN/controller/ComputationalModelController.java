@@ -41,6 +41,15 @@ class MsqEvent {
     int x;      //stato dell'evento: 1 è attivo, 0 è inattivo
 }
 
+
+/*ComputationalModelController è solo una classe di prova per sperimentare il funzionamento del sistema
+ * con parametri casuali
+ * 
+ */
+
+
+
+
 /* TIPOLOGIE DI EVENTO IN BASE ALL'INDICE NELL'ARRAY EVENTS
 /* (PROVA)
  * LOGIN
@@ -67,7 +76,7 @@ class MsqEvent {
 
 
 
-public class ComputationalModelController { //è una classe di debug per fare prove
+public class ComputationalModelController { 
 		
 	static double START = 0.0; //tempo d'inizio della simulazione
     static double STOP = 6 * 3600; //dopo quanto tempo termina la simulazione
@@ -116,19 +125,6 @@ public class ComputationalModelController { //è una classe di debug per fare pr
 		
 		rng.plantSeeds(seed);
 		
-        //inizializzazione dei 3 time slot
-		//System.out.println("\n------------INIZIALIZZAZIONE DEI TIME SLOT--------------");
-		//Creazione di 2 slot da 3 ore ciascuno
-		/*int slotDuration = 10800; //3 ore in secondi
-        for (int f = 0; f < 2; f++) {
-            TimeSlot slot = new TimeSlot(PERCENTAGE[f], 12062, slotDuration * f, slotDuration * (f + 1) - 1);
-            slotList.add(slot);
-        }*/
-        
-        /*System.out.println("Elenco dei time slot: ");
-        for (TimeSlot sl: slotList) {
-        	System.out.println("Slot di indice: " + slotList.indexOf(sl) + " e percentuale: " + sl.getPercentage());
-        }*/
         
         //System.out.println("\n-----------INIZIALIZZAZIONE EVENTI NELLA SIMULAZIONE-------------");
         //int sumDebug = ALL_EVENTS_WITH_SAVE_STAT;
@@ -195,7 +191,7 @@ public class ComputationalModelController { //è una classe di debug per fare pr
         
         int iter = 0;
         
-        //while (iter != 15) {
+        
         while(events[0].x != 0 || totalJobsInLogin+totalJobsInUltimateTeam+totalJobsInStagioni+totalJobsInClub != 0) {
         	
         	iter++;
