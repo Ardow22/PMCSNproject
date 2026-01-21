@@ -44,7 +44,7 @@ public class Constants {
     //probabilità di abbandonare il sistema dopo i controlli Stagioni
     public static final double not_P6 = 0.01;
     
-    //probabilità di abbandonare il sistema dopo i controlli Stagioni
+    //probabilità di abbandonare il sistema dopo i controlli Club
     public static final double not_P7 = 0.02;
     
 
