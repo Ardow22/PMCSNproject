@@ -899,11 +899,6 @@ public class ComputationalModelController {
         //System.out.println("----CALCOLO DELL'ARRIVO----");
         //System.out.println("Ultimo istante in cui è stato generato un arrivo è: " + sarrival);
 		r.selectStream(1 + streamIndex);
-        //int index = TimeSlotController.timeSlotSwitch(slotList, currentTime);
-		
-        //System.out.println("Lo slot orario individuato è quello di indice: " + index);
-
-        //sarrival += exponential(1 / (slotList.get(index).getAveragePoisson() / 3600), r);
         sarrival+= exponential(1/24.0, r);
         //System.out.println("Quindi ora l'ultimo istante in cui è stato generato un arrivo è: " + (sarrival));
 
